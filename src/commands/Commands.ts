@@ -15,7 +15,7 @@ export default function readCommand(message: string, player: Player, room: Room)
                     player.reply({message: "Ja tem goleiro no Red", color: Colors.HotPink} )
                 } else {
                     player.settings.goalie = 1
-                    player.setAvatar("go")
+                    player.setAvatar("🧤")
                     player.reply({ message: "Para remover a posição de goalie digite !li", color: Colors.HotPink })
                     room.send({ message: `${player.name} é o Goalie do Red`, color: Colors.Crimson})
                 }
@@ -25,7 +25,7 @@ export default function readCommand(message: string, player: Player, room: Room)
                     player.reply({ message: "Ja tem goleiro no Blue", color: Colors.DodgerBlue })
                 } else {
                     player.settings.goalie = 2
-                    player.setAvatar("go")
+                    player.setAvatar("🧤")
                     player.reply({ message: "Para remover a posição de goalie digite !li", color: Colors.DodgerBlue })
                     room.send({ message: `${player.name} é o Goalie do Blue`, color: Colors.CornflowerBlue })
                 }       
@@ -36,7 +36,7 @@ export default function readCommand(message: string, player: Player, room: Room)
         case "!li":
             if (player.settings.goalie) {
                 player.settings.goalie = ""
-                player.clearAvatar()
+                player.setAvatar(player.name.replace(/[^\w\s]/gi, '').slice(0, 2))
             } else {
                 player.reply({ message: `Tu nem era goleiro.. xiu`, color: Colors.DarkGoldenRod })
             }

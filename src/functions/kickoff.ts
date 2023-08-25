@@ -21,7 +21,7 @@ export default function kickoff(room : Room) {
         const randomRedPlayer = redTeam.splice(randomIndex, 1)[0]; // Remove and retrieve the Player
         
         if (randomRedPlayer.settings.penaltyGoalie) {
-            randomRedPlayer.clearAvatar()
+            randomRedPlayer.setAvatar(randomRedPlayer.name.replace(/[^\w\s]/gi, '').slice(0, 2))
             randomRedPlayer.settings.penaltyGoalie = 0  
         }
         
@@ -71,7 +71,7 @@ export default function kickoff(room : Room) {
         const randomBluePlayer = blueTeam.splice(randomIndex, 1)[0]; // Remove and retrieve the Player
         
         if (randomBluePlayer.settings.penaltyGoalie) {
-            randomBluePlayer.clearAvatar()
+            randomBluePlayer.setAvatar(randomBluePlayer.name.replace(/[^\w\s]/gi, '').slice(0, 2))
             randomBluePlayer.settings.penaltyGoalie = 0  
         }
 

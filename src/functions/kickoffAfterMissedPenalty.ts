@@ -76,7 +76,7 @@ export default function kickoffAfterMissedPenalty(xAxis: 500 | -500, room : Room
                 const randomBluePlayer = blueTeam.splice(randomIndex, 1)[0]; // Remove and retrieve the Player
                 
                 if (randomBluePlayer.settings.penaltyGoalie) {
-                    randomBluePlayer.clearAvatar()
+                    randomBluePlayer.setAvatar(randomBluePlayer.name.replace(/[^\w\s]/gi, '').slice(0, 2))
                     randomBluePlayer.settings.penaltyGoalie = 0  
                 }
                 
@@ -180,7 +180,7 @@ export default function kickoffAfterMissedPenalty(xAxis: 500 | -500, room : Room
                
                 if (randomRedPlayer.settings.penaltyGoalie) {
                     randomRedPlayer.settings.penaltyGoalie = 0
-                    randomRedPlayer.clearAvatar()
+                    randomRedPlayer.setAvatar(randomRedPlayer.name.replace(/[^\w\s]/gi, '').slice(0, 2))
                 }
 
                 

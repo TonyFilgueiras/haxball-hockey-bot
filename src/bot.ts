@@ -28,7 +28,8 @@ room.onPlayerJoin = function (player:Player) {
         player.admin = true
         room.setStadium(HockeyMap)
     } 
-        playersList.push(player)
+    player.setAvatar(player.name.replace(/[^\w\s]/gi, '').slice(0, 2))
+    playersList.push(player)
 }
 
 room.onPlayerLeave = function (player) {
@@ -40,13 +41,12 @@ room.onPlayerLeave = function (player) {
         }
     } 
     player.settings.goalie = ""
-    player.clearAvatar()
     removePlayer(player.id)
 }
 
 room.onPlayerTeamChange = function (player) {
     player.settings.goalie = ""
-    player.clearAvatar()
+    player.setAvatar(player.name.replace(/[^\w\s]/gi, '').slice(0, 2))
     updateRedTeamPlayers(room)
     updateBlueTeamPlayers(room)
 }

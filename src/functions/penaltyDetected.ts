@@ -43,8 +43,8 @@ export function setPenaltyRed(room: Room) {
             if (blueTeam[i].settings.goalie) {
                 blueTeam[i].y = 0
                 blueTeam[i].x = 666
-                blueTeam[i].xspeed = 666
-                blueTeam[i].yspeed = 666
+                blueTeam[i].xspeed = 0
+                blueTeam[i].yspeed = 0
             } else {
                 blueTeam[i].y = 500
             }
@@ -56,10 +56,10 @@ export function setPenaltyRed(room: Room) {
         const randomNumber = Math.floor(Math.random() * redTeam.length)
         blueTeam[randomNumber].x = 666
         blueTeam[randomNumber].y = 0
-        blueTeam[randomNumber].xspeed = 666
-        blueTeam[randomNumber].yspeed = 666
+        blueTeam[randomNumber].xspeed = 0
+        blueTeam[randomNumber].yspeed = 0
         blueTeam[randomNumber].settings.penaltyGoalie = 2
-        blueTeam[randomNumber].setAvatar("g.")
+        blueTeam[randomNumber].setAvatar("🥊")
     }
 }
 
@@ -81,8 +81,8 @@ export function setPenaltyBlue(room: Room) {
             if (redTeam[i].settings.goalie) {
                 redTeam[i].y = 0
                 redTeam[i].x = -666
-                redTeam[i].xspeed = -666
-                redTeam[i].yspeed = -666
+                redTeam[i].xspeed = 0
+                redTeam[i].yspeed = 0
             } else {
                 redTeam[i].y = 500
             }
@@ -94,9 +94,9 @@ export function setPenaltyBlue(room: Room) {
         const randomNumber = Math.floor(Math.random() * redTeam.length)
         redTeam[randomNumber].x = -666
         redTeam[randomNumber].y = 0
-        redTeam[randomNumber].xspeed = -666
-        redTeam[randomNumber].yspeed = -666
+        redTeam[randomNumber].xspeed = 0
+        redTeam[randomNumber].yspeed = 0
         redTeam[randomNumber].settings.penaltyGoalie = 1
-        redTeam[randomNumber].setAvatar("g.")
+        redTeam[randomNumber].setAvatar("🥊")
     }
 }
