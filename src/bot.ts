@@ -28,7 +28,7 @@ room.onPlayerJoin = function (player:Player) {
         player.admin = true
         room.setStadium(HockeyMap)
     } 
-    playersList.push(player)
+        playersList.push(player)
 }
 
 room.onPlayerLeave = function (player) {
@@ -65,22 +65,34 @@ room.onGameTick = function () {
     if (room.settings.mode === "penred") {
         if (room.discs[0].x >= 760) {
             if (room.discs[0].y > 97 || room.discs[0].y < -97) {
-                kickoffAfterMissedPenalty(500, room)
+                if (!room.settings.penalty && !room.settings.disabledPenaltys) {
+                    kickoffAfterMissedPenalty(500, room)
+                }
             }
         } else if (room.discs[0].y > 210 || room.discs[0].y < -210) {
-            kickoffAfterMissedPenalty(500, room)
+            if (!room.settings.penalty && !room.settings.disabledPenaltys) {
+                    kickoffAfterMissedPenalty(500, room)
+                }
         } else if (room.discs[0].xspeed < 0 && room.discs[0].x < 760 && !insideBlueBox(room.discs[0].x,room.discs[0].y) ) {
-            kickoffAfterMissedPenalty(500, room)
+            if (!room.settings.penalty && !room.settings.disabledPenaltys) {
+                    kickoffAfterMissedPenalty(500, room)
+                }
         }
     } else if (room.settings.mode === "penblue") {
         if (room.discs[0].x <= -760) {
             if (room.discs[0].y > 97 || room.discs[0].y < -97) {
-                kickoffAfterMissedPenalty(-500, room)
+                if (!room.settings.penalty && !room.settings.disabledPenaltys) {
+                    kickoffAfterMissedPenalty(-500, room)
+                }
             }
         } else if (room.discs[0].y > 210 || room.discs[0].y < -210) {
-            kickoffAfterMissedPenalty(-500, room)
+            if (!room.settings.penalty && !room.settings.disabledPenaltys) {
+                    kickoffAfterMissedPenalty(-500, room)
+                }
         } else if (room.discs[0].xspeed > 0 && room.discs[0].x > -760 && !insideRedBox(room.discs[0].x,room.discs[0].y) ) {
-            kickoffAfterMissedPenalty(-500, room)
+            if (!room.settings.penalty && !room.settings.disabledPenaltys) {
+                    kickoffAfterMissedPenalty(-500, room)
+                }
         }
     }
 }
@@ -101,7 +113,7 @@ room.onPlayerBallKick = function (player) {
                 penaltyDetected(player, "O animal pegou a bola dentro da área sem ser goleiro!", room, 1)
             }
             
-        } else if (player.settings.goalie) {
+        } else if (player.settings.goalie || player.settings.penaltyGoalie) {
             if (goalieOutsideBox(player)) {
                 penaltyDetected(player, "O animal tocou no disco fora da area de goleiro apos o toque do adversário", room, 1)
             }
@@ -111,7 +123,7 @@ room.onPlayerBallKick = function (player) {
             if (insideBlueBox(player.x, player.y)) {
                 penaltyDetected(player, "O animal pegou a bola dentro da área sem ser goleiro!", room, 2)
             }
-        } else if (player.settings.goalie) {
+        } else if (player.settings.goalie || player.settings.penaltyGoalie) {
             if (goalieOutsideBox(player)) {
                 penaltyDetected(player, "O animal tocou no disco fora da area de goleiro apos o toque do adversário", room, 2)
             }
@@ -121,9 +133,10 @@ room.onPlayerBallKick = function (player) {
 }
 room.onTeamGoal = function (team) {
     if (room.settings.penalty) {
-        room.send({ message: `Gol! Segue o jogo!`, color: team == 1 ? Colors.HotPink : Colors.Cyan, style: "bold" })
+        room.send({ message: `Gol! Segue o jogo!`, color: team == 1 ? Colors.Crimson : Colors.CornflowerBlue, style: "bold" })
         room.settings.penalty = 0
     }
+    room.settings.disabledPenaltys = true
 }
 
 room.onGameStart = function () {

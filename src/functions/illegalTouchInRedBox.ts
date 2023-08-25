@@ -5,7 +5,7 @@ import touchedDisc from "./touchedDisc";
 
 export default function illegalTouchInRedBox(player: Player, room : Room) {
     if (insideRedBox(player.x, player.y)) {
-        if (!player.settings.goalie) {
+        if (!player.settings.goalie && player.settings.penaltyGoalie !== 1) {
             if (touchedDisc(room, player)) {
                 penaltyDetected(player, "O animal pegou a bola dentro da área sem ser goleiro!", room, 1)
             }

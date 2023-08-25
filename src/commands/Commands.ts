@@ -1,6 +1,8 @@
 import { Colors, Player, PlayerList, Room } from "haxball-extended-room";
 import checkForGoalieSetting from "../functions/checkForGoaliesetting";
 import penaltyDetected, { setPenaltyBlue, setPenaltyRed } from "../functions/penaltyDetected";
+import kickoffAfterMissedPenalty from "../functions/kickoffAfterMissedPenalty";
+import kickoff from "../functions/kickoff";
 
 export default function readCommand(message: string, player: Player, room: Room) {
     switch (message.toLowerCase()) {
@@ -15,20 +17,20 @@ export default function readCommand(message: string, player: Player, room: Room)
                     player.settings.goalie = 1
                     player.setAvatar("go")
                     player.reply({ message: "Para remover a posição de goalie digite !li", color: Colors.HotPink })
-                    room.send({ message: `${player.name} é o Goalie do Red`, color: Colors.Red})
+                    room.send({ message: `${player.name} é o Goalie do Red`, color: Colors.Crimson})
                 }
             } else if (player.team == 2) {
                 var blueHasGoalie = checkForGoalieSetting(room.players.blue(), 2)
                 if (blueHasGoalie) {
-                    player.reply({ message: "Ja tem goleiro no Blue", color: Colors.Cyan })
+                    player.reply({ message: "Ja tem goleiro no Blue", color: Colors.DodgerBlue })
                 } else {
                     player.settings.goalie = 2
                     player.setAvatar("go")
-                    player.reply({ message: "Para remover a posição de goalie digite !li", color: Colors.Cyan })
-                    room.send({ message: `${player.name} é o Goalie do Red`, color: Colors.Blue })
+                    player.reply({ message: "Para remover a posição de goalie digite !li", color: Colors.DodgerBlue })
+                    room.send({ message: `${player.name} é o Goalie do Blue`, color: Colors.CornflowerBlue })
                 }       
             } else {
-                player.reply({ message: "Tu ta no spec doidão", color: Colors.Yellow})
+                player.reply({ message: "Tu ta no spec doidão", color: Colors.DarkGoldenRod})
             }
             break
         case "!li":
@@ -36,15 +38,57 @@ export default function readCommand(message: string, player: Player, room: Room)
                 player.settings.goalie = ""
                 player.clearAvatar()
             } else {
-                player.reply({ message: `Tu nem era goleiro.. xiu`, color: Colors.Yellow })
+                player.reply({ message: `Tu nem era goleiro.. xiu`, color: Colors.DarkGoldenRod })
             }
             break
         case "!penred":
-            setPenaltyRed(room)
+            if (player.admin) {
+                setPenaltyRed(room)
+            }
+            break
         case "!penblue":
-            setPenaltyBlue(room)
+            if (player.admin) {
+                setPenaltyBlue(room)
+            }
+            break
+        case "!help":
+        case "!commands":
+            player.reply({ message: "Comandos disponiveis: !go, !li, !penred, !penblue, !help, !disc, !resetball,!rules", color: Colors.DarkGoldenRod})
+            break 
+        case "!resetball":
+        case "!reset":
+            if (player.admin) {
+                if (room.discs[0].x < 0) {
+                    kickoffAfterMissedPenalty(-500, room)
+                } else if (room.discs[0].x > 0) {
+                    kickoffAfterMissedPenalty(500, room)
+                } else {
+                    kickoff(room)
+                }
+            }
+            break
+        case "!disc":
+        case "!discord":
+            player.reply({ message: "https://discord.gg/SHbvtrt8", color: Colors.Azure, style: "bold" })
+            break
+        case "!rules":
+        case "!regras":
+            player.reply({ message: "Cada time tem direito a um(a) Goalie.", color: Colors.MistyRose });
+            player.reply({ message: "Goalie - Só pode pegar o disco dentro de sua própria área:", color: Colors.MistyRose });
+            player.reply({ message: "         - na zona de ataque (à frente do meio-campo),", color: Colors.MistyRose });
+            player.reply({ message: "         - na zona atrás de seu próprio gol,", color: Colors.MistyRose });
+            player.reply({ message: "         - ou após o toque de um(a) companheiro(a) de time.", color: Colors.MistyRose });
+            player.reply({ message: "Jogador(a) de linha - Não pode pegar o disco dentro da área defensiva,", color: Colors.MistyRose });
+            player.reply({ message: "Não pode interferir com o(a) goleiro(a) adversário(a) caso esteja dentro de sua própria área.", color: Colors.MistyRose });
+            player.reply({ message: "Qualquer infração causada resultará em um 'penal' para o adversário.", color: Colors.MistyRose });
+            player.reply({ message: "Obs.: 1 pixel do(a) jogador(a) dentro da área é considerado dentro.", color: Colors.MistyRose });
+            player.reply({ message: "         1 pixel do(a) Goalie à frente do meio-campo ou atrás do gol também é o suficiente para não ser penalizado(a).", color: Colors.MistyRose });
+            break
+        case "!bb":
+            player.kick()
+            break
         default :
-            player.reply({message: "Não entendi teu comando brother", color: Colors.Yellow})
+            player.reply({message: "Não entendi teu comando brother", color: Colors.DarkGoldenRod})
             break
     }
 }

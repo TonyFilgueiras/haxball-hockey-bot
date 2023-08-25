@@ -7,7 +7,7 @@ import insideBlueBox from "./insideBlueBox";
 
 export default function goalieIllegalTouch(player: Player, room: Room) {
     const previousTouchOnDisc = lastTeamTouched
-    if (player.settings.goalie) {
+    if (player.settings.goalie || player.settings.penaltyGoalie) {
         if (touchedDisc(room, player)) {
             if (goalieOutsideBox(player)) {
                 if (previousTouchOnDisc !== player.team) {

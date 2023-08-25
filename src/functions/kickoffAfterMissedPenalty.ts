@@ -1,4 +1,4 @@
-import { Room } from "haxball-extended-room";
+import { Colors, Room } from "haxball-extended-room";
 import { redTeam, updateRedTeamPlayers } from "../players/redTeam";
 import { blueTeam, updateBlueTeamPlayers } from "../players/blueTeam";
 
@@ -7,6 +7,9 @@ export default function kickoffAfterMissedPenalty(xAxis: 500 | -500, room : Room
     let bluePlayerSorted = 0
 
     room.settings.mode = "game"
+    room.pause()
+    room.send({ message: "Penalty perdido!", color: xAxis > 0 ? Colors.Crimson : Colors.CornflowerBlue })
+    room.unpause()
     
     function getRandom1OrMinus1(): 1 | -1 {
         return Math.random() >= 0.5 ? 1 : -1;
@@ -17,12 +20,12 @@ export default function kickoffAfterMissedPenalty(xAxis: 500 | -500, room : Room
     const disc = room.discs[0]
     switch (xAxis) {
         case 500: 
-            disc.x = 500
-            disc.y = 210 * topOrBottom
-            disc.xspeed = 0
-            disc.yspeed = 0
-
-            while (redTeam.length > 0) {
+        disc.x = 500
+        disc.y = 210 * topOrBottom
+        disc.xspeed = 0
+        disc.yspeed = 0
+        
+        while (redTeam.length > 0) {
                 const randomIndex = Math.floor(Math.random() * redTeam.length);
                 const randomRedPlayer = redTeam.splice(randomIndex, 1)[0]; // Remove and retrieve the Player
                 
@@ -72,6 +75,10 @@ export default function kickoffAfterMissedPenalty(xAxis: 500 | -500, room : Room
                 const randomIndex = Math.floor(Math.random() * blueTeam.length);
                 const randomBluePlayer = blueTeam.splice(randomIndex, 1)[0]; // Remove and retrieve the Player
                 
+                if (randomBluePlayer.settings.penaltyGoalie) {
+                    randomBluePlayer.clearAvatar()
+                    randomBluePlayer.settings.penaltyGoalie = 0  
+                }
                 
                 if (!randomBluePlayer.settings.goalie) {
                     if (bluePlayerSorted == 0) {
@@ -170,7 +177,12 @@ export default function kickoffAfterMissedPenalty(xAxis: 500 | -500, room : Room
             while (redTeam.length > 0) {
                 const randomIndex = Math.floor(Math.random() * redTeam.length);
                 const randomRedPlayer = redTeam.splice(randomIndex, 1)[0]; // Remove and retrieve the Player
-                
+               
+                if (randomRedPlayer.settings.penaltyGoalie) {
+                    randomRedPlayer.settings.penaltyGoalie = 0
+                    randomRedPlayer.clearAvatar()
+                }
+
                 
                 if (!randomRedPlayer.settings.goalie) {
                     if (redPlayerSorted == 0) {

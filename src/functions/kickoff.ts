@@ -7,6 +7,7 @@ export default function kickoff(room : Room) {
     let bluePlayerSorted = 0
 
     room.settings.mode = "game"
+    room.settings.disabledPenaltys = false
     
 
     const disc = room.discs[0]
@@ -19,6 +20,10 @@ export default function kickoff(room : Room) {
         const randomIndex = Math.floor(Math.random() * redTeam.length);
         const randomRedPlayer = redTeam.splice(randomIndex, 1)[0]; // Remove and retrieve the Player
         
+        if (randomRedPlayer.settings.penaltyGoalie) {
+            randomRedPlayer.clearAvatar()
+            randomRedPlayer.settings.penaltyGoalie = 0  
+        }
         
         if (!randomRedPlayer.settings.goalie) {
             if (redPlayerSorted == 0) {
@@ -65,7 +70,11 @@ export default function kickoff(room : Room) {
         const randomIndex = Math.floor(Math.random() * blueTeam.length);
         const randomBluePlayer = blueTeam.splice(randomIndex, 1)[0]; // Remove and retrieve the Player
         
-        
+        if (randomBluePlayer.settings.penaltyGoalie) {
+            randomBluePlayer.clearAvatar()
+            randomBluePlayer.settings.penaltyGoalie = 0  
+        }
+
         if (!randomBluePlayer.settings.goalie) {
             if (bluePlayerSorted == 0) {
                 randomBluePlayer.x = 40
