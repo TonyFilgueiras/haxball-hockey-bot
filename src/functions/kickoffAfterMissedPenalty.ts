@@ -6,6 +6,8 @@ export default function kickoffAfterMissedPenalty(xAxis: 500 | -500, room : Room
     let redPlayerSorted = 0
     let bluePlayerSorted = 0
 
+    room.settings.penaltyTimer = 0
+
     room.settings.mode = "game"
     room.pause()
     room.send({ message: "Penalty perdido!", color: xAxis > 0 ? Colors.Crimson : Colors.CornflowerBlue })

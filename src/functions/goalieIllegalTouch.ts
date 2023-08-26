@@ -26,7 +26,7 @@ export function goalieOutsideBox(player: Player): boolean{
     switch (player.team) {
         case 1:
             if (!insideRedBox(player.x, player.y)){
-                if (player.x < 16 && player.x >= -744) {
+                if (player.x < -15 && player.x >= -744) {
                     return true
                 }
                 else {
@@ -37,7 +37,7 @@ export function goalieOutsideBox(player: Player): boolean{
             }
         case 2:
             if (!insideBlueBox(player.x, player.y)){
-                if (player.x > -16 && player.x <= 744) {
+                if (player.x > 15 && player.x <= 744) {
                     return true
                 } else {
                     return false
