@@ -12,12 +12,10 @@ import goalieIllegalTouch, { goalieOutsideBox } from "./functions/goalieIllegalT
 import detectLastTeamTouch, { lastTeamTouched } from "./functions/detectLastTeamTouch";
 import illegalTouchInRedBox from "./functions/illegalTouchInRedBox";
 import illegalTouchInBlueBox from "./functions/illegalTouchInBlueBox";
-import kickoffAfterMissedPenalty from "./functions/kickoffAfterMissedPenalty";
 import kickoff from "./functions/kickoff";
-import goalieBumpPenalty from "./functions/goalieBumpPenalty";
 import playerBump from "./functions/playerBump";
-import headingTowardsGoal from "./functions/headingTowardsGoal";
 import penaltyTimer from "./functions/penaltyTimer";
+import missedPenalty from "./functions/MissedPenalty";
 
 // melhorar o passe pro gk
 // penalty
@@ -45,12 +43,12 @@ room.onPlayerLeave = function (player) {
             playersList[0].admin = true
         }
     } 
-    player.settings.goalie = ""
+    player.settings.goalie = 0
     removePlayer(player.id)
 }
 
 room.onPlayerTeamChange = function (player) {
-    player.settings.goalie = ""
+    player.settings.goalie = 0
     player.setAvatar(player.name.replace(/[^\w\s]/gi, '').slice(0, 2))
     updateRedTeamPlayers(room)
     updateBlueTeamPlayers(room)
@@ -71,42 +69,10 @@ room.onGameTick = function () {
     }
     if (room.settings.mode === "penred") {
         penaltyTimer(room)
-        if (room.discs[0].x >= 760) {
-            if (room.discs[0].y > 97 || room.discs[0].y < -97) {
-                if (!room.settings.penalty && !room.settings.disabledPenaltys) {
-                    kickoffAfterMissedPenalty(500, room)
-                }
-            }
-        } else if (room.discs[0].y > 210 || room.discs[0].y < -210) {
-            if (!room.settings.penalty && !room.settings.disabledPenaltys) {
-                kickoffAfterMissedPenalty(500, room)
-            }
-        } else if (room.discs[0].xspeed < -0.5 && room.discs[0].x < 760 && !insideBlueBox(room.discs[0].x,room.discs[0].y) && room.settings.penaltyTimer > 60 ) {
-            if (!room.settings.penalty && !room.settings.disabledPenaltys) {
-                kickoffAfterMissedPenalty(500, room)
-            }
-        } else if (room.settings.penaltyTimer > 600) {
-            kickoffAfterMissedPenalty(500, room)
-        }
+        missedPenalty(room, "penred")
     } else if (room.settings.mode === "penblue") {
         penaltyTimer(room)
-        if (room.discs[0].x <= -760) {
-            if (room.discs[0].y > 97 || room.discs[0].y < -97) {
-                if (!room.settings.penalty && !room.settings.disabledPenaltys) {
-                    kickoffAfterMissedPenalty(-500, room)
-                }
-            }
-        } else if (room.discs[0].y > 210 || room.discs[0].y < -210) {
-            if (!room.settings.penalty && !room.settings.disabledPenaltys) {
-                kickoffAfterMissedPenalty(-500, room)
-            }
-        } else if (room.discs[0].xspeed > 0.5 && room.discs[0].x > -760 && !insideRedBox(room.discs[0].x,room.discs[0].y) && room.settings.penaltyTimer > 60 ) {
-            if (!room.settings.penalty && !room.settings.disabledPenaltys) {
-                kickoffAfterMissedPenalty(-500, room)
-            }
-        } else if (room.settings.penaltyTimer > 600) {
-            kickoffAfterMissedPenalty(-500, room)
-        }
+        missedPenalty(room, "penblue")
     }
 }
 
@@ -161,7 +127,6 @@ room.onTeamGoal = function (team) {
 
 room.onGameStart = function () {
     room.settings.penaltyTimer = 0
-    room.settings.disablePause = false
     kickoff(room)
     room.pause()
     room.send({message: "Cada time tem direito a um GO.... digite !go para ser o goleiro", color: Colors.Gold, style: "bold"})

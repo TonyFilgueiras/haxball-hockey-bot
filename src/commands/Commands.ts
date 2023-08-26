@@ -35,7 +35,7 @@ export default function readCommand(message: string, player: Player, room: Room)
             break
         case "!li":
             if (player.settings.goalie) {
-                player.settings.goalie = ""
+                player.settings.goalie = 0
                 player.setAvatar(player.name.replace(/[^\w\s]/gi, '').slice(0, 2))
             } else {
                 player.reply({ message: `Tu nem era goleiro.. xiu`, color: Colors.DarkGoldenRod })
