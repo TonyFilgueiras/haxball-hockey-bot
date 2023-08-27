@@ -3,6 +3,7 @@ import { redTeam, updateRedTeamPlayers } from "../players/redTeam";
 import { blueTeam, updateBlueTeamPlayers } from "../players/blueTeam";
 import { room } from "../bot";
 import { error } from "console";
+import setDiscPosition from "./setDiscPosition";
 
 export default function kickoffAfterMissedPenalty(xAxis: 500 | -500, afterPenalty: boolean = true) {
     try {
@@ -27,54 +28,28 @@ export default function kickoffAfterMissedPenalty(xAxis: 500 | -500, afterPenalt
         const disc = room.discs[0]
         switch (xAxis) {
             case 500: 
-            disc.x = 500
-            disc.y = 210 * topOrBottom
-            disc.xspeed = 0
-            disc.yspeed = 0
-            
-            while (redTeam.length > 0) {
+                setDiscPosition(disc, 500, 210 * topOrBottom)
+                
+                while (redTeam.length > 0) {
                     const randomIndex = Math.floor(Math.random() * redTeam.length);
                     const randomRedPlayer = redTeam.splice(randomIndex, 1)[0]; // Remove and retrieve the Player
                     
                     
                     if (!randomRedPlayer.settings.goalie) {
                         if (redPlayerSorted == 0) {
-                            randomRedPlayer.x = 460
-                            randomRedPlayer.y = 210 * topOrBottom
-                            randomRedPlayer.xspeed = 0
-                            randomRedPlayer.yspeed = 0
-                            
+                            setDiscPosition(randomRedPlayer, 460, 210 * topOrBottom)                            
                         } else if (redPlayerSorted == 1) {
-                            randomRedPlayer.x = 390
-                            randomRedPlayer.y = 100 * topOrBottom
-                            randomRedPlayer.xspeed = 0
-                            randomRedPlayer.yspeed = 0
-                            
+                            setDiscPosition(randomRedPlayer, 390, 100 * topOrBottom)                                                        
                         } else if (redPlayerSorted == 2) {
-                            randomRedPlayer.x = 380
-                            randomRedPlayer.y = 310 * topOrBottom
-                            randomRedPlayer.xspeed = 0
-                            randomRedPlayer.yspeed = 0
-                            
+                            setDiscPosition(randomRedPlayer, 380, 310 * topOrBottom)                                                        
                         } else if (redPlayerSorted == 3) {
-                            randomRedPlayer.x = 220
-                            randomRedPlayer.y = 210 * topOrBottom
-                            randomRedPlayer.xspeed = 0
-                            randomRedPlayer.yspeed = 0
-                            
+                            setDiscPosition(randomRedPlayer, 220, 210 * topOrBottom)                            
                         } else if (redPlayerSorted == 4) {
-                            randomRedPlayer.x = 0
-                            randomRedPlayer.y = 130 * topOrBottom
-                            randomRedPlayer.xspeed = 0
-                            randomRedPlayer.yspeed = 0
-                            
+                            setDiscPosition(randomRedPlayer, 0, 130 * topOrBottom)                                                        
                         }
                         redPlayerSorted++
                     } else {
-                        randomRedPlayer.x = 0
-                        randomRedPlayer.y = 130 * topOrBottom
-                        randomRedPlayer.xspeed = 0
-                        randomRedPlayer.yspeed = 0
+                        setDiscPosition(randomRedPlayer, 0, 130 * topOrBottom)                            
                     }
                 }
                 updateRedTeamPlayers()
@@ -89,51 +64,25 @@ export default function kickoffAfterMissedPenalty(xAxis: 500 | -500, afterPenalt
                     
                     if (!randomBluePlayer.settings.goalie) {
                         if (bluePlayerSorted == 0) {
-                            randomBluePlayer.x = 540
-                            randomBluePlayer.y = 210 * topOrBottom
-                            randomBluePlayer.xspeed = 0
-                            randomBluePlayer.yspeed = 0
-                            
+                            setDiscPosition(randomBluePlayer, 540, 210 * topOrBottom)                            
                         } else if (bluePlayerSorted == 1) {
-                            randomBluePlayer.x = 610
-                            randomBluePlayer.y = 100 * topOrBottom
-                            randomBluePlayer.xspeed = 0
-                            randomBluePlayer.yspeed = 0
-                            
+                            setDiscPosition(randomBluePlayer, 610, 100 * topOrBottom)                                                        
                         } else if (bluePlayerSorted == 2) {
-                            randomBluePlayer.x = 620
-                            randomBluePlayer.y = 310 * topOrBottom
-                            randomBluePlayer.xspeed = 0
-                            randomBluePlayer.yspeed = 0
-                            
+                            setDiscPosition(randomBluePlayer, 620, 310 * topOrBottom)                            
                         } else if (bluePlayerSorted == 3) {
-                            randomBluePlayer.x = 510
-                            randomBluePlayer.y = 50 * topOrBottom
-                            randomBluePlayer.xspeed = 0
-                            randomBluePlayer.yspeed = 0
-                            
+                            setDiscPosition(randomBluePlayer, 510, 50 * topOrBottom)                            
                         } else if (bluePlayerSorted == 4) {
-                            randomBluePlayer.x = 640
-                            randomBluePlayer.y = 130 * topOrBottom
-                            randomBluePlayer.xspeed = 0
-                            randomBluePlayer.yspeed = 0
-                            
+                            setDiscPosition(randomBluePlayer, 640, 130 * topOrBottom)                            
                         }
                         bluePlayerSorted++
                     } else {
-                        randomBluePlayer.x = 670
-                        randomBluePlayer.y = 55 * topOrBottom
-                        randomBluePlayer.xspeed = 0
-                        randomBluePlayer.yspeed = 0
+                        setDiscPosition(randomBluePlayer, 670, 55 * topOrBottom)                            
                     }
                 }
                 updateBlueTeamPlayers()
                 break
             case -500:
-                disc.x = -500
-                disc.y = 210 * topOrBottom
-                disc.xspeed = 0
-                disc.yspeed = 0
+                setDiscPosition(disc, -500, 210 * topOrBottom)
     
                 while (blueTeam.length > 0) {
                     const randomIndex = Math.floor(Math.random() * blueTeam.length);
@@ -142,42 +91,19 @@ export default function kickoffAfterMissedPenalty(xAxis: 500 | -500, afterPenalt
                     
                     if (!randomBluePlayer.settings.goalie) {
                         if (bluePlayerSorted == 0) {
-                            randomBluePlayer.x = -460
-                            randomBluePlayer.y = 210 * topOrBottom
-                            randomBluePlayer.xspeed = 0
-                            randomBluePlayer.yspeed = 0
-                            
+                            setDiscPosition(randomBluePlayer, -460, 210 * topOrBottom)                            
                         } else if (bluePlayerSorted == 1) {
-                            randomBluePlayer.x = -390
-                            randomBluePlayer.y = 100 * topOrBottom
-                            randomBluePlayer.xspeed = 0
-                            randomBluePlayer.yspeed = 0
-                            
+                            setDiscPosition(randomBluePlayer, -390, 100 * topOrBottom)                                                        
                         } else if (bluePlayerSorted == 2) {
-                            randomBluePlayer.x = -380
-                            randomBluePlayer.y = 310 * topOrBottom
-                            randomBluePlayer.xspeed = 0
-                            randomBluePlayer.yspeed = 0
-                            
+                            setDiscPosition(randomBluePlayer, -380, 310 * topOrBottom)                                                        
                         } else if (bluePlayerSorted == 3) {
-                            randomBluePlayer.x = -220
-                            randomBluePlayer.y = 210 * topOrBottom
-                            randomBluePlayer.xspeed = 0
-                            randomBluePlayer.yspeed = 0
-                            
+                            setDiscPosition(randomBluePlayer, -220, 210 * topOrBottom)                            
                         } else if (bluePlayerSorted == 4) {
-                            randomBluePlayer.x = 0
-                            randomBluePlayer.y = 130 * topOrBottom
-                            randomBluePlayer.xspeed = 0
-                            randomBluePlayer.yspeed = 0
-                            
+                            setDiscPosition(randomBluePlayer, 0, 130 * topOrBottom)                                                        
                         }
                         bluePlayerSorted++
                     } else {
-                        randomBluePlayer.x = 0
-                        randomBluePlayer.y = 130 * topOrBottom
-                        randomBluePlayer.xspeed = 0
-                        randomBluePlayer.yspeed = 0
+                        setDiscPosition(randomBluePlayer, 0, 130 * topOrBottom) 
                     }
                 }
                 updateBlueTeamPlayers()
@@ -193,42 +119,19 @@ export default function kickoffAfterMissedPenalty(xAxis: 500 | -500, afterPenalt
                     
                     if (!randomRedPlayer.settings.goalie) {
                         if (redPlayerSorted == 0) {
-                            randomRedPlayer.x = -540
-                            randomRedPlayer.y = 210 * topOrBottom
-                            randomRedPlayer.xspeed = 0
-                            randomRedPlayer.yspeed = 0
-                            
+                            setDiscPosition(randomRedPlayer, -540, 210 * topOrBottom)                            
                         } else if (redPlayerSorted == 1) {
-                            randomRedPlayer.x = -610
-                            randomRedPlayer.y = 100 * topOrBottom
-                            randomRedPlayer.xspeed = 0
-                            randomRedPlayer.yspeed = 0
-                            
+                            setDiscPosition(randomRedPlayer, -610, 100 * topOrBottom)                                                        
                         } else if (redPlayerSorted == 2) {
-                            randomRedPlayer.x = -620
-                            randomRedPlayer.y = 310 * topOrBottom
-                            randomRedPlayer.xspeed = 0
-                            randomRedPlayer.yspeed = 0
-                            
+                            setDiscPosition(randomRedPlayer, -620, 310 * topOrBottom)                            
                         } else if (redPlayerSorted == 3) {
-                            randomRedPlayer.x = -510
-                            randomRedPlayer.y = 50 * topOrBottom
-                            randomRedPlayer.xspeed = 0
-                            randomRedPlayer.yspeed = 0
-                            
+                            setDiscPosition(randomRedPlayer, -510, 50 * topOrBottom)                            
                         } else if (redPlayerSorted == 4) {
-                            randomRedPlayer.x = -640
-                            randomRedPlayer.y = 130 * topOrBottom
-                            randomRedPlayer.xspeed = 0
-                            randomRedPlayer.yspeed = 0
-                            
+                            setDiscPosition(randomRedPlayer, -640, 130 * topOrBottom)                            
                         }
                         redPlayerSorted++
                     } else {
-                        randomRedPlayer.x = -670
-                        randomRedPlayer.y = 55 * topOrBottom
-                        randomRedPlayer.xspeed = 0
-                        randomRedPlayer.yspeed = 0
+                        setDiscPosition(randomRedPlayer, -670, 55 * topOrBottom) 
                     }
                 }
                 updateRedTeamPlayers()

@@ -3,6 +3,7 @@ import { redTeam } from "../players/redTeam";
 import { blueTeam } from "../players/blueTeam";
 import checkForGoalieSetting from "./checkForGoaliesetting";
 import { room } from "../bot";
+import setDiscPosition from "./setDiscPosition";
 
 export default function penaltyDetected(player: Player, penalty: string, team: number) {
     if (!room.settings.penalty && !room.settings.disabledPenaltys) {
@@ -31,24 +32,18 @@ export function setPenaltyRed() {
         const disc = room.discs[0]
 
     
-        disc.x = 130
-        disc.y = 0
-        disc.xspeed = 0
-        disc.yspeed = 0
+        setDiscPosition(disc, 130, 0)       
+        
         room.settings.lastTeamTouch = 2
         room.settings.penaltyTimer = 0
         
         for (let i = 0; i < redTeam.length; i++){
-            redTeam[i].x = -70
-            redTeam[i].y = (i - 2) * 50
+            setDiscPosition(redTeam[i], -70, (i - 2) * 50) 
         }
         if (checkForGoalieSetting(room.players.blue(), 2)) {
             for (let i = 0; i < blueTeam.length; i++){
                 if (blueTeam[i].settings.goalie) {
-                    blueTeam[i].y = 0
-                    blueTeam[i].x = 666
-                    blueTeam[i].xspeed = 0
-                    blueTeam[i].yspeed = 0
+                    setDiscPosition(blueTeam[i], 666, 0) 
                 } else {
                     blueTeam[i].y = 500
                 }
@@ -58,10 +53,7 @@ export function setPenaltyRed() {
                 blueTeam[i].y = 500           
             }
             const randomNumber = Math.floor(Math.random() * blueTeam.length)
-            blueTeam[randomNumber].x = 666
-            blueTeam[randomNumber].y = 0
-            blueTeam[randomNumber].xspeed = 0
-            blueTeam[randomNumber].yspeed = 0
+            setDiscPosition(blueTeam[randomNumber], 666, 0) 
             blueTeam[randomNumber].settings.penaltyGoalie = 2
             blueTeam[randomNumber].setAvatar("🥊")
         }
@@ -78,22 +70,16 @@ export function setPenaltyBlue() {
         
         room.settings.lastTeamTouch = 1
         room.settings.penaltyTimer = 0
-        disc.x = -130
-        disc.y = 0
-        disc.xspeed = 0
-        disc.yspeed = 0
+
+        setDiscPosition(disc, -130, 0) 
         
         for (let i = 0; i < blueTeam.length; i++) {
-            blueTeam[i].x = 70
-            blueTeam[i].y = (i - 2) * 50
+            setDiscPosition(blueTeam[i], 70, (i - 2) * 50) 
         }
         if (checkForGoalieSetting(room.players.red(), 1)) {
             for (let i = 0; i < redTeam.length; i++) {
                 if (redTeam[i].settings.goalie) {
-                    redTeam[i].y = 0
-                    redTeam[i].x = -666
-                    redTeam[i].xspeed = 0
-                    redTeam[i].yspeed = 0
+                    setDiscPosition(redTeam[i], -666, 0) 
                 } else {
                     redTeam[i].y = 500
                 }
@@ -103,10 +89,7 @@ export function setPenaltyBlue() {
                 redTeam[i].y = 500
             }
             const randomNumber = Math.floor(Math.random() * redTeam.length)
-            redTeam[randomNumber].x = -666
-            redTeam[randomNumber].y = 0
-            redTeam[randomNumber].xspeed = 0
-            redTeam[randomNumber].yspeed = 0
+            setDiscPosition(redTeam[randomNumber], -666, 0) 
             redTeam[randomNumber].settings.penaltyGoalie = 1
             redTeam[randomNumber].setAvatar("🥊")
         }
