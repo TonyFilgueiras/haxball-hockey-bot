@@ -3,11 +3,11 @@ import insideBlueBox from "./insideBlueBox";
 import penaltyDetected from "./penaltyDetected";
 import touchedDisc from "./touchedDisc";
 
-export default function illegalTouchInBlueBox(player: Player, room : Room) {
+export default function illegalTouchInBlueBox(player: Player) {
     if (insideBlueBox(player.x, player.y)) {
         if (!player.settings.goalie && player.settings.penaltyGoalie !== 2) {
-            if (touchedDisc(room, player)) {
-                penaltyDetected(player, "O animal pegou a bola dentro da área sem ser goleiro!", room, 2)
+            if (touchedDisc(player)) {
+                penaltyDetected(player, "O animal pegou a bola dentro da área sem ser goleiro!", 2)
             }
         }
     }

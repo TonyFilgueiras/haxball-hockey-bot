@@ -1,5 +1,5 @@
-import { Room } from "haxball-extended-room";
+import { room } from "../bot";
 
-export default function penaltyTimer(room: Room) {
+export default function penaltyTimer() {
     room.settings.penaltyTimer++
 }

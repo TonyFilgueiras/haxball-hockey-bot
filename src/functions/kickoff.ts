@@ -1,8 +1,9 @@
 import { Room } from "haxball-extended-room";
 import { blueTeam, updateBlueTeamPlayers } from "../players/blueTeam";
 import { redTeam, updateRedTeamPlayers } from "../players/redTeam";
+import { room } from "../bot";
 
-export default function kickoff(room : Room) {
+export default function kickoff() {
     let redPlayerSorted = 0
     let bluePlayerSorted = 0
 
@@ -65,7 +66,7 @@ export default function kickoff(room : Room) {
             randomRedPlayer.yspeed = 0
         }
     }
-    updateRedTeamPlayers(room)
+    updateRedTeamPlayers()
     while (blueTeam.length > 0) {
         const randomIndex = Math.floor(Math.random() * blueTeam.length);
         const randomBluePlayer = blueTeam.splice(randomIndex, 1)[0]; // Remove and retrieve the Player
@@ -115,5 +116,5 @@ export default function kickoff(room : Room) {
             randomBluePlayer.yspeed = 0
         }
     }
-    updateBlueTeamPlayers(room)
+    updateBlueTeamPlayers()
 }

@@ -3,8 +3,9 @@ import checkForGoalieSetting from "../functions/checkForGoaliesetting";
 import penaltyDetected, { setPenaltyBlue, setPenaltyRed } from "../functions/penaltyDetected";
 import kickoffAfterMissedPenalty from "../functions/kickoffAfterMissedPenalty";
 import kickoff from "../functions/kickoff";
+import { room } from "../bot";
 
-export default function readCommand(message: string, player: Player, room: Room) {
+export default function readCommand(message: string, player: Player) {
     switch (message.toLowerCase()) {
         case "!go":
         case "!gk":
@@ -35,20 +36,31 @@ export default function readCommand(message: string, player: Player, room: Room)
             break
         case "!li":
             if (player.settings.goalie) {
-                player.settings.goalie = 0
-                player.setAvatar(player.name.replace(/[^\w\s]/gi, '').slice(0, 2))
+                if (room.isGameInProgress()) {
+                    if (room.discs[0].x < -760 || room.discs[0].x > 760) {
+                        player.settings.goalie = 0
+                        player.setAvatar(player.name.replace(/[^\w\s]/gi, '').slice(0, 2))
+                        player.team === 1? room.send({ message: `${player.name} não é mais o Goalie do Red`, color: Colors.Crimson}) : room.send({ message: `${player.name} não é mais o Goalie do Blue`, color: Colors.CornflowerBlue})
+                    } else {
+                        player.reply({ message: `Só pode trocar a posição com o disco atras de algum gol`, color: Colors.DarkGoldenRod })
+                    }
+                } else if (room.paused) {
+                    player.settings.goalie = 0
+                    player.setAvatar(player.name.replace(/[^\w\s]/gi, '').slice(0, 2))
+                    player.team === 1? room.send({ message: `${player.name} não é mais o Goalie do Red`, color: Colors.Crimson}) : room.send({ message: `${player.name} não é mais o Goalie do Blue`, color: Colors.CornflowerBlue})
+                }
             } else {
                 player.reply({ message: `Tu nem era goleiro.. xiu`, color: Colors.DarkGoldenRod })
             }
             break
         case "!penred":
-            if (player.admin) {
-                setPenaltyRed(room)
+            if (player.admin && room.isGameInProgress()) {
+                setPenaltyRed()
             }
             break
         case "!penblue":
-            if (player.admin) {
-                setPenaltyBlue(room)
+            if (player.admin && room.isGameInProgress()) {
+                setPenaltyBlue()
             }
             break
         case "!help":
@@ -57,13 +69,13 @@ export default function readCommand(message: string, player: Player, room: Room)
             break 
         case "!resetball":
         case "!reset":
-            if (player.admin) {
+            if (player.admin && room.isGameInProgress()) {
                 if (room.discs[0].x < 0) {
-                    kickoffAfterMissedPenalty(-500, room)
+                    kickoffAfterMissedPenalty(-500, false)
                 } else if (room.discs[0].x > 0) {
-                    kickoffAfterMissedPenalty(500, room)
+                    kickoffAfterMissedPenalty(500, false)
                 } else {
-                    kickoff(room)
+                    kickoff()
                 }
             }
             break

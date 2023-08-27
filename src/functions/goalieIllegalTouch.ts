@@ -1,20 +1,20 @@
-import { Player, Room } from "haxball-extended-room";
+import { Player } from "haxball-extended-room";
 import touchedDisc from "./touchedDisc";
 import penaltyDetected from "./penaltyDetected";
-import { lastTeamTouched } from "./detectLastTeamTouch";
 import insideRedBox from "./insideRedBox";
 import insideBlueBox from "./insideBlueBox";
+import { room } from "../bot";
 
-export default function goalieIllegalTouch(player: Player, room: Room) {
-    const previousTouchOnDisc = lastTeamTouched
+export default function goalieIllegalTouch(player: Player) {
+    const previousTouchOnDisc = room.settings.lastTeamTouch
     if (player.settings.goalie || player.settings.penaltyGoalie) {
-        if (touchedDisc(room, player)) {
+        if (touchedDisc(player)) {
             if (goalieOutsideBox(player)) {
                 if (previousTouchOnDisc !== player.team) {
                     if (player.team === 2){
-                        penaltyDetected(player, "O animal tocou no disco fora da area de goleiro apos o toque do adversário", room, 2)   
+                        penaltyDetected(player, "O animal tocou no disco fora da area de goleiro apos o toque do adversário", 2)   
                     } else if (player.team ===1){
-                        penaltyDetected(player, "O animal tocou no disco fora da area de goleiro apos o toque do adversário", room, 1)
+                        penaltyDetected(player, "O animal tocou no disco fora da area de goleiro apos o toque do adversário", 1)
                     }
                 }
             }

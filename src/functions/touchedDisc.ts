@@ -1,9 +1,10 @@
 import { Player, Room } from "haxball-extended-room";
-import detectLastTeamTouch from "./detectLastTeamTouch";
+import detectLastPlayerTouch from "./detectLastPlayerTouch";
+import { room } from "../bot";
 
-export default function touchedDisc(room: Room, player: Player): boolean {
+export default function touchedDisc( player: Player): boolean {
     if (room.discs[0].distanceTo(player) < 1) {
-        detectLastTeamTouch(player.team)
+        detectLastPlayerTouch(player)
         return true
     } else {
         return false

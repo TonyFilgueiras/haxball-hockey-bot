@@ -3,8 +3,9 @@ import { redTeam } from "../players/redTeam";
 import { blueTeam } from "../players/blueTeam";
 import insideRedBox from "./insideRedBox";
 import insideBlueBox from "./insideBlueBox";
+import { room } from "../bot";
 
-export default function goalieBumpPenalty(player: Player, room: Room): void {
+export default function goalieBumpPenalty(player: Player): void {
     for (let i = 0; i < redTeam.length; i++){
         if (player.collidingWith(redTeam[i])) {
             console.log("cheguei no colide")
