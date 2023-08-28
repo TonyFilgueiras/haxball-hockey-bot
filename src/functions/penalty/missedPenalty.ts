@@ -1,11 +1,11 @@
 import { Room } from "haxball-extended-room"
-import insideBlueBox from "./insideBlueBox"
-import kickoffAfterMissedPenalty from "./kickoffAfterMissedPenalty"
-import insideRedBox from "./insideRedBox"
-import touchedDisc from "./touchedDisc"
-import { redTeam } from "../players/redTeam"
-import { blueTeam } from "../players/blueTeam"
-import { room } from "../bot"
+import insideBlueBox from "../insideBlueBox"
+import kickoffAfterMissedPenalty from "../kickoffAfterMissedPenalty"
+import insideRedBox from "../insideRedBox"
+import touchedDisc from "../touchedDisc"
+import { redTeam } from "../../players/redTeam"
+import { blueTeam } from "../../players/blueTeam"
+import { room } from "../../bot"
 
 const previousPlayerTouchOnDisc = room?.settings.lastPlayerTouch
 const previousTeamTouchOnDisc = room?.settings.lastTeamTouch

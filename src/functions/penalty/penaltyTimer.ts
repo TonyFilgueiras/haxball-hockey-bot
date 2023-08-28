@@ -1,4 +1,4 @@
-import { room } from "../bot";
+import { room } from "../../bot";
 
 export default function penaltyTimer() {
     room.settings.penaltyTimer++

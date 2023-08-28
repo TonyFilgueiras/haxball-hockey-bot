@@ -1,9 +1,9 @@
 import { ChatStyle, Colors, Player, Room } from "haxball-extended-room";
-import { redTeam } from "../players/redTeam";
-import { blueTeam } from "../players/blueTeam";
-import checkForGoalieSetting from "./checkForGoaliesetting";
-import { room } from "../bot";
-import setDiscPosition from "./setDiscPosition";
+import { redTeam } from "../../players/redTeam";
+import { blueTeam } from "../../players/blueTeam";
+import checkForGoalieSetting from "../goalie/checkForGoaliesetting";
+import { room } from "../../bot";
+import setDiscPosition from "../setDiscPosition";
 
 export default function penaltyDetected(player: Player, penalty: string, team: number) {
     if (!room.settings.penalty && !room.settings.disabledPenaltys) {
