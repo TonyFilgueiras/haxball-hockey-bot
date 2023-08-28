@@ -1,6 +1,6 @@
 import { Player, Room } from "haxball-extended-room";
 import insideBlueBox from "./insideBlueBox";
-import penaltyDetected from "./penaltyDetected";
+import penaltyDetected from "./penalty/penaltyDetected";
 import touchedDisc from "./touchedDisc";
 
 export default function illegalTouchInBlueBox(player: Player) {

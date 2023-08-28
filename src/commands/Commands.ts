@@ -1,6 +1,6 @@
 import { Colors, Player, PlayerList, Room } from "haxball-extended-room";
-import checkForGoalieSetting from "../functions/checkForGoaliesetting";
-import penaltyDetected, { setPenaltyBlue, setPenaltyRed } from "../functions/penaltyDetected";
+import checkForGoalieSetting from "../functions/goalie/checkForGoaliesetting";
+import penaltyDetected, { setPenaltyBlue, setPenaltyRed } from "../functions/penalty/penaltyDetected";
 import kickoffAfterMissedPenalty from "../functions/kickoffAfterMissedPenalty";
 import kickoff from "../functions/kickoff";
 import { room } from "../bot";

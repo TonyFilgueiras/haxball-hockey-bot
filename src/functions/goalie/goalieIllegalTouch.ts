@@ -1,9 +1,9 @@
 import { Player } from "haxball-extended-room";
-import touchedDisc from "./touchedDisc";
-import penaltyDetected from "./penaltyDetected";
-import insideRedBox from "./insideRedBox";
-import insideBlueBox from "./insideBlueBox";
-import { room } from "../bot";
+import touchedDisc from "..//touchedDisc";
+import penaltyDetected from "../penalty/penaltyDetected";
+import insideRedBox from "../insideRedBox";
+import insideBlueBox from "../insideBlueBox";
+import { room } from "../../bot";
 
 export default function goalieIllegalTouch(player: Player) {
     const previousTouchOnDisc = room.settings.lastTeamTouch

@@ -1,9 +1,9 @@
 import { Player, Room } from "haxball-extended-room";
-import { redTeam } from "../players/redTeam";
-import { blueTeam } from "../players/blueTeam";
-import insideRedBox from "./insideRedBox";
-import insideBlueBox from "./insideBlueBox";
-import { room } from "../bot";
+import { redTeam } from "../../players/redTeam";
+import { blueTeam } from "../../players/blueTeam";
+import insideRedBox from "../insideRedBox";
+import insideBlueBox from "../insideBlueBox";
+import { room } from "../../bot";
 
 export default function goalieBumpPenalty(player: Player): void {
     for (let i = 0; i < redTeam.length; i++){

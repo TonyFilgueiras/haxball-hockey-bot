@@ -4,18 +4,18 @@ import insideBlueBox from "./functions/insideBlueBox";
 import insideRedBox from "./functions/insideRedBox";
 import readCommand from "./commands/Commands";
 import touchedDisc from "./functions/touchedDisc";
-import penaltyDetected from "./functions/penaltyDetected";
+import penaltyDetected from "./functions/penalty/penaltyDetected";
 import { playersList, removePlayer } from "./players/players";
 import { redTeam, updateRedTeamPlayers } from "./players/redTeam";
 import { blueTeam, updateBlueTeamPlayers } from "./players/blueTeam";
-import goalieIllegalTouch, { goalieOutsideBox } from "./functions/goalieIllegalTouch";
+import goalieIllegalTouch, { goalieOutsideBox } from "./functions/goalie/goalieIllegalTouch";
 import detectLastPlayerTouch from "./functions/detectLastPlayerTouch";
 import illegalTouchInRedBox from "./functions/illegalTouchInRedBox";
 import illegalTouchInBlueBox from "./functions/illegalTouchInBlueBox";
 import kickoff from "./functions/kickoff";
-import playerBump from "./functions/playerBump";
-import penaltyTimer from "./functions/penaltyTimer";
-import missedPenalty from "./functions/MissedPenalty";
+import playerBump from "./functions/goalie/goalieBump";
+import penaltyTimer from "./functions/penalty/penaltyTimer";
+import missedPenalty from "./functions/penalty/MissedPenalty";
 
 
 export const room = new Room({
