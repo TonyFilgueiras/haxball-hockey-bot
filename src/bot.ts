@@ -29,6 +29,8 @@ room.onPlayerJoin = function (player:Player) {
         player.admin = true
         room.setStadium(HockeyMap)
     } 
+    room.lockTeams()
+    player.reply({message: "digite !help para mais informações....", color: Colors.Chartreuse, sound: 2})
     player.setAvatar(player.name.replace(/[^\w\s]/gi, '').slice(0, 2))
     playersList.push(player)
 }
@@ -80,7 +82,12 @@ room.onPlayerChat = function (player, message) {
         return false
     }
     if (room.settings.chatmuted) return false
+}
 
+room.onStadiumChange = function (newStadiumName, byPlayer) {
+    if (byPlayer) {
+        room.setStadium(HockeyMap)
+    }
 }
 
 room.onPlayerBallKick = function (player) {

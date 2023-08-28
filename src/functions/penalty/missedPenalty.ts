@@ -51,13 +51,13 @@ export default function missedPenalty(mode: "penred" | "penblue") {
     case "penblue":
       if (penaltyMissedEnabled) {
         if (missedGoal) {
-          kickoffAfterMissedPenalty(500, "O jogador errou o gol");
+          kickoffAfterMissedPenalty(-500, "O jogador errou o gol");
         } else if (discWentWentTooWide) {
-          kickoffAfterMissedPenalty(500, "O disco foi pra lateral");
+          kickoffAfterMissedPenalty(-500, "O disco foi pra lateral");
         } else if (discWentBackwards) {
-          kickoffAfterMissedPenalty(500, "O disco foi pra trás");
+          kickoffAfterMissedPenalty(-500, "O disco foi pra trás");
         } else if (penaltyTimerExpired) {
-          kickoffAfterMissedPenalty(500, "Tempo expirou (10seg)");
+          kickoffAfterMissedPenalty(-500, "Tempo expirou (10seg)");
         }
       }
       blueTeam.forEach((p) => {
