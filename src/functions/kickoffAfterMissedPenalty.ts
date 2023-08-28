@@ -5,17 +5,19 @@ import { room } from "../bot";
 import { error } from "console";
 import setDiscPosition from "./setDiscPosition";
 
-export default function kickoffAfterMissedPenalty(xAxis: 500 | -500, afterPenalty: boolean = true) {
+export default function kickoffAfterMissedPenalty(xAxis: 500 | -500, reasonMissedPenalty?: string, afterPenalty: boolean = true) {
     try {
         let redPlayerSorted = 0
         let bluePlayerSorted = 0
-    
+        
+        room.settings.penaltyKickers = 0
         room.settings.penaltyTimer = 0
     
         room.settings.mode = "game"
         room.pause()
         if (afterPenalty) {
-            room.send({ message: "Penalty perdido!", color: xAxis > 0 ? Colors.Crimson : Colors.CornflowerBlue })
+            room.send({ message: "Penalty perdido!", color: xAxis > 0 ? Colors.Crimson : Colors.CornflowerBlue, sound: 2, style: "bold" })
+            room.send({ message: `${reasonMissedPenalty}`, color: xAxis > 0 ? Colors.Crimson : Colors.CornflowerBlue , sound: 2, style: "bold"})
         }
         room.unpause()
         

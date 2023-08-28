@@ -21,7 +21,7 @@ import missedPenalty from "./functions/penalty/MissedPenalty";
 export const room = new Room({
     public: false,
     maxPlayers: 20,
-    roomName: `Hockey [beta]`
+    roomName: `🏑Hockey [beta]`
 });
 
 room.onPlayerJoin = function (player:Player) {
@@ -53,6 +53,13 @@ room.onPlayerTeamChange = function (player) {
 }
 
 room.onGameTick = function () {
+    if (room.settings.mode === "penred") {
+        penaltyTimer()
+        missedPenalty("penred")
+    } else if (room.settings.mode === "penblue") {
+        penaltyTimer()
+        missedPenalty("penblue")
+    }
     for (let i = 0; i < redTeam.length; i++){
         goalieIllegalTouch(redTeam[i])
         illegalTouchInRedBox(redTeam[i])
@@ -64,13 +71,6 @@ room.onGameTick = function () {
         illegalTouchInBlueBox(blueTeam[i])  
         touchedDisc(blueTeam[i])
         playerBump(blueTeam[i])
-    }
-    if (room.settings.mode === "penred") {
-        penaltyTimer()
-        missedPenalty("penred")
-    } else if (room.settings.mode === "penblue") {
-        penaltyTimer()
-        missedPenalty("penblue")
     }
 }
 
@@ -112,6 +112,9 @@ room.onPlayerBallKick = function (player) {
             }
         }
     }
+    if (room.settings.mode !== "game") {
+        detectLastPlayerTouch(player, true)
+    }
     detectLastPlayerTouch(player)
 }
 room.onTeamGoal = function (team) {
@@ -119,6 +122,7 @@ room.onTeamGoal = function (team) {
         room.send({ message: `Gol! Segue o jogo!`, color: team == 1 ? Colors.Crimson : Colors.CornflowerBlue, style: "bold" })
         room.settings.penalty = 0
     }
+    room.settings.penaltyKickers = 0
     room.settings.penaltyTimer = 0
     room.settings.disabledPenaltys = true
 }

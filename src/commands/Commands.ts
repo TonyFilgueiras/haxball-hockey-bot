@@ -18,6 +18,10 @@ export default function readCommand(message: string, player: Player) {
                     player.settings.goalie = 1
                     player.setAvatar("🧤")
                     player.reply({ message: "Para remover a posição de goalie digite !li", color: Colors.HotPink })
+                    player.reply({ message: "Voce só pode tocar na bola na:", color: Colors.HotPink })
+                    player.reply({ message: "-       Zona ofensiva", color: Colors.HotPink })
+                    player.reply({ message: "-       Zona atras do gol", color: Colors.HotPink })
+                    player.reply({ message: "-       Ou quando um companheiro de equipe tocou por ultimo", color: Colors.HotPink })
                     room.send({ message: `${player.name} é o Goalie do Red`, color: Colors.Crimson})
                 }
             } else if (player.team == 2) {
@@ -28,6 +32,10 @@ export default function readCommand(message: string, player: Player) {
                     player.settings.goalie = 2
                     player.setAvatar("🧤")
                     player.reply({ message: "Para remover a posição de goalie digite !li", color: Colors.DodgerBlue })
+                    player.reply({ message: "Voce só pode tocar na bola na:", color: Colors.DodgerBlue })
+                    player.reply({ message: "-       Zona ofensiva", color: Colors.DodgerBlue })
+                    player.reply({ message: "-       Zona atras do gol", color: Colors.DodgerBlue })
+                    player.reply({ message: "-       Ou quando um companheiro de equipe tocou por ultimo", color: Colors.DodgerBlue })
                     room.send({ message: `${player.name} é o Goalie do Blue`, color: Colors.CornflowerBlue })
                 }       
             } else {
@@ -55,11 +63,13 @@ export default function readCommand(message: string, player: Player) {
             break
         case "!penred":
             if (player.admin && room.isGameInProgress()) {
+                room.send({ message: `${player.name} Marcou o penal para o Red`, color: Colors.Crimson, style: "bold", sound: 2})
                 setPenaltyRed()
             }
             break
-        case "!penblue":
-            if (player.admin && room.isGameInProgress()) {
+            case "!penblue":
+                if (player.admin && room.isGameInProgress()) {
+                room.send({ message: `${player.name} Marcou o penal para o Blue`, color: Colors.CornflowerBlue, style: "bold", sound: 2})
                 setPenaltyBlue()
             }
             break
@@ -71,9 +81,9 @@ export default function readCommand(message: string, player: Player) {
         case "!reset":
             if (player.admin && room.isGameInProgress()) {
                 if (room.discs[0].x < 0) {
-                    kickoffAfterMissedPenalty(-500, false)
+                    kickoffAfterMissedPenalty(-500,'', false)
                 } else if (room.discs[0].x > 0) {
-                    kickoffAfterMissedPenalty(500, false)
+                    kickoffAfterMissedPenalty(500,'', false)
                 } else {
                     kickoff()
                 }

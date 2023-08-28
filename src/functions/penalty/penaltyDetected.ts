@@ -1,4 +1,4 @@
-import { ChatStyle, Colors, Player, Room } from "haxball-extended-room";
+import { ChatSounds, ChatStyle, Colors, Player, Room } from "haxball-extended-room";
 import { redTeam } from "../../players/redTeam";
 import { blueTeam } from "../../players/blueTeam";
 import checkForGoalieSetting from "../goalie/checkForGoaliesetting";
@@ -7,7 +7,7 @@ import setDiscPosition from "../setDiscPosition";
 
 export default function penaltyDetected(player: Player, penalty: string, team: number) {
     if (!room.settings.penalty && !room.settings.disabledPenaltys) {
-        room.send({ message: `Penalty by ${player.name}!`, color: team == 1 ? Colors.Crimson : Colors.CornflowerBlue, style: "bold" })
+        room.send({ message: `Penalty by ${player.name}!`, color: team == 1 ? Colors.Crimson : Colors.CornflowerBlue, style: "bold", sound:2})
         room.send({message: `${penalty}`, color: team == 1? Colors.Crimson : Colors.CornflowerBlue, style: "bold"})
     }
     
@@ -34,7 +34,9 @@ export function setPenaltyRed() {
     
         setDiscPosition(disc, 130, 0)       
         
-        room.settings.lastTeamTouch = 2
+        room.settings.penaltyKickers = 0
+        room.settings.penaltyTakerTeam = 2
+        room.settings.penaltyTakerId = 0
         room.settings.penaltyTimer = 0
         
         for (let i = 0; i < redTeam.length; i++){
@@ -67,8 +69,10 @@ export function setPenaltyBlue() {
     try {
         room.settings.mode = 'penblue'
         const disc = room.discs[0]
-        
-        room.settings.lastTeamTouch = 1
+
+        room.settings.penaltyKickers = 0
+        room.settings.penaltyTakerTeam = 1
+        room.settings.penaltyTakerId = 0
         room.settings.penaltyTimer = 0
 
         setDiscPosition(disc, -130, 0) 
