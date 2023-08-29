@@ -1,9 +1,10 @@
 import { Colors, Player, PlayerList, Room } from "haxball-extended-room";
 import checkForGoalieSetting from "../functions/goalie/checkForGoaliesetting";
-import penaltyDetected, { setPenaltyBlue, setPenaltyRed } from "../functions/penalty/penaltyDetected";
+import { setPenaltyBlue, setPenaltyRed } from "../functions/penalty/penaltyDetected";
 import kickoffAfterMissedPenalty from "../functions/kickoffAfterMissedPenalty";
 import kickoff from "../functions/kickoff";
 import { room } from "../bot";
+import setGoalie from "../functions/goalie/setGoalie";
 
 export default function readCommand(message: string, player: Player) {
     switch (message.toLowerCase()) {
@@ -15,48 +16,30 @@ export default function readCommand(message: string, player: Player) {
                 if (redHasGoalie) {
                     player.reply({message: "Ja tem goleiro no Red", color: Colors.HotPink} )
                 } else {
-                    player.settings.goalie = 1
-                    player.setAvatar("🧤")
-                    player.reply({ message: "Para remover a posição de goalie digite !li", color: Colors.HotPink })
-                    player.reply({ message: "Voce só pode tocar na bola na:", color: Colors.HotPink })
-                    player.reply({ message: "-       Zona ofensiva", color: Colors.HotPink })
-                    player.reply({ message: "-       Zona atras do gol", color: Colors.HotPink })
-                    player.reply({ message: "-       Ou quando um companheiro de equipe tocou por ultimo", color: Colors.HotPink })
-                    room.send({ message: `${player.name} é o Goalie do Red`, color: Colors.Crimson})
+                    setGoalie(player)
                 }
             } else if (player.team == 2) {
                 var blueHasGoalie = checkForGoalieSetting(room.players.blue(), 2)
                 if (blueHasGoalie) {
                     player.reply({ message: "Ja tem goleiro no Blue", color: Colors.DodgerBlue })
                 } else {
-                    player.settings.goalie = 2
-                    player.setAvatar("🧤")
-                    player.reply({ message: "Para remover a posição de goalie digite !li", color: Colors.DodgerBlue })
-                    player.reply({ message: "Voce só pode tocar na bola na:", color: Colors.DodgerBlue })
-                    player.reply({ message: "-       Zona ofensiva", color: Colors.DodgerBlue })
-                    player.reply({ message: "-       Zona atras do gol", color: Colors.DodgerBlue })
-                    player.reply({ message: "-       Ou quando um companheiro de equipe tocou por ultimo", color: Colors.DodgerBlue })
-                    room.send({ message: `${player.name} é o Goalie do Blue`, color: Colors.CornflowerBlue })
+                    setGoalie(player)
                 }       
             } else {
                 player.reply({ message: "Tu ta no spec doidão", color: Colors.DarkGoldenRod})
             }
             break
-        case "!li":
-            if (player.settings.goalie) {
+            case "!li":
+                if (player.settings.goalie) {
                 if (room.isGameInProgress()) {
-                    if (room.discs[0].x < -760 || room.discs[0].x > 760) {
+                    if (room.discs[0].x < -760 || room.discs[0].x > 760 || room.paused) {
                         player.settings.goalie = 0
                         player.setAvatar(player.name.replace(/[^\w\s]/gi, '').slice(0, 2))
                         player.team === 1? room.send({ message: `${player.name} não é mais o Goalie do Red`, color: Colors.Crimson}) : room.send({ message: `${player.name} não é mais o Goalie do Blue`, color: Colors.CornflowerBlue})
                     } else {
                         player.reply({ message: `Só pode trocar a posição com o disco atras de algum gol`, color: Colors.DarkGoldenRod })
                     }
-                } else if (room.paused) {
-                    player.settings.goalie = 0
-                    player.setAvatar(player.name.replace(/[^\w\s]/gi, '').slice(0, 2))
-                    player.team === 1? room.send({ message: `${player.name} não é mais o Goalie do Red`, color: Colors.Crimson}) : room.send({ message: `${player.name} não é mais o Goalie do Blue`, color: Colors.CornflowerBlue})
-                }
+                } 
             } else {
                 player.reply({ message: `Tu nem era goleiro.. xiu`, color: Colors.DarkGoldenRod })
             }

@@ -6,18 +6,12 @@ import insideBlueBox from "../insideBlueBox";
 import { room } from "../../bot";
 
 export default function goalieIllegalTouch(player: Player) {
-    const previousTouchOnDisc = room.settings.lastTeamTouch
-    if (player.settings.goalie || player.settings.penaltyGoalie) {
-        if (touchedDisc(player)) {
-            if (goalieOutsideBox(player)) {
-                if (previousTouchOnDisc !== player.team) {
-                    if (player.team === 2){
-                        penaltyDetected(player, "O animal tocou no disco fora da area de goleiro apos o toque do adversário", 2)   
-                    } else if (player.team ===1){
-                        penaltyDetected(player, "O animal tocou no disco fora da area de goleiro apos o toque do adversário", 1)
-                    }
-                }
-            }
+    const previousTouchOnDisc = room.settings.lastTeamTouch;
+
+    if ((player.settings.goalie || player.settings.penaltyGoalie) && touchedDisc(player) && goalieOutsideBox(player) && room.settings.lastTeamTouch !== 0) {
+        if (previousTouchOnDisc !== player.team) {
+            const penaltyMessage = "O animal tocou no disco fora da área de goleiro após o toque do adversário";
+            penaltyDetected(player, penaltyMessage, player.team);
         }
     }
 }
