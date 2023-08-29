@@ -8,4 +8,5 @@ export default function detectLastTouch(player: Player, penaltyMode: boolean = f
         room.settings.penaltyTakerId = player.id
         room.settings.penaltyTakerTeam = player.team
     }
+    player.team === 1 ? room.discs[0].color = 5570560 : room.discs[0].color = 85
 }

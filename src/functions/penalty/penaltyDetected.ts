@@ -37,7 +37,7 @@ export function setPenaltyRed() {
     try {
         room.settings.mode = "penred"
         const disc = room.discs[0]
-
+        disc.color = 0
     
         setDiscPosition(disc, 230, 0)       
         
@@ -76,7 +76,7 @@ export function setPenaltyBlue() {
     try {
         room.settings.mode = 'penblue'
         const disc = room.discs[0]
-
+        disc.color = 0
         room.settings.penaltyKickers = 0
         room.settings.penaltyTakerTeam = 1
         room.settings.penaltyTakerId = 0

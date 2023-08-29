@@ -10,10 +10,11 @@ export default function kickoff() {
 
     room.settings.mode = "game"
     room.settings.disabledPenaltys = false
+    room.settings.lastTeamTouch = 0
     
 
     const disc = room.discs[0]
-
+    disc.color = 0
     setDiscPosition(disc, 0, 0)
 
     while (redTeam.length > 0) {

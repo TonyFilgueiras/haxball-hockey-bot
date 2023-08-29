@@ -41,12 +41,12 @@ export default function missedPenalty(mode: "penred" | "penblue") {
         } else if (penaltyTimerExpired) {
           kickoffAfterMissedPenalty(500, "Tempo expirou (10seg)");
         }
+        redTeam.forEach((p) => {
+          if (penaltyCarrierChange(p)) {
+            kickoffAfterMissedPenalty(500, "Só pode um jogador bater o penal");
+          }
+        });
       }
-      redTeam.forEach((p) => {
-        if (penaltyCarrierChange(p)) {
-          kickoffAfterMissedPenalty(500, "Só pode um jogador bater o penal");
-        }
-      });
       break;
     case "penblue":
       if (penaltyMissedEnabled) {
@@ -59,12 +59,12 @@ export default function missedPenalty(mode: "penred" | "penblue") {
         } else if (penaltyTimerExpired) {
           kickoffAfterMissedPenalty(-500, "Tempo expirou (10seg)");
         }
+        blueTeam.forEach((p) => {
+          if (penaltyCarrierChange(p)) {
+            kickoffAfterMissedPenalty(-500, "Só pode um jogador bater o penal");
+          }
+        });
       }
-      blueTeam.forEach((p) => {
-        if (penaltyCarrierChange(p)) {
-          kickoffAfterMissedPenalty(-500, "Só pode um jogador bater o penal");
-        }
-      });
       break;
   }
 }
