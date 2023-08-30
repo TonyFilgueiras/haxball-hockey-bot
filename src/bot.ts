@@ -18,6 +18,9 @@ import penaltyTimer from "./functions/penalty/penaltyTimer";
 import missedPenalty from "./functions/penalty/MissedPenalty";
 
 
+// TENTAR FAZER A PAREDE NA FALTA
+// FAZER SHOOTOUT NO OVERTIME OU COMO MODO
+
 export const room = new Room({
     public: false,
     maxPlayers: 20,
@@ -43,6 +46,8 @@ room.onPlayerLeave = function (player) {
             playersList[0].admin = true
         }
     } 
+    updateBlueTeamPlayers()
+    updateRedTeamPlayers()
     player.settings.goalie = 0
     removePlayer(player.id)
 }
@@ -125,9 +130,9 @@ room.onPlayerBallKick = function (player) {
     detectLastPlayerTouch(player)
 }
 room.onTeamGoal = function (team) {
-    if (room.settings.penalty) {
+    if (room.settings.penaltyDetected) {
         room.send({ message: `Gol! Segue o jogo!`, color: team == 1 ? Colors.Crimson : Colors.CornflowerBlue, style: "bold" })
-        room.settings.penalty = 0
+        room.settings.penaltyDetected = 0
     }
     room.settings.penaltyKickers = 0
     room.settings.penaltyTimer = 0
@@ -140,6 +145,9 @@ room.onGameStart = function () {
     room.pause()
     room.send({message: "Cada time tem direito a um GO.... digite !go para ser o goleiro", color: Colors.Gold, style: "bold"})
     room.send({ message: "Ou joga sem goleiro e fdc eu não ligo...", color: Colors.Gray, style: "italic" })
+    setTimeout(() => {
+        room.unpause();
+    },2000)
 }
 
 room.onPositionsReset = function () {
