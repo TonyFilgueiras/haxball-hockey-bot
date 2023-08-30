@@ -5,6 +5,7 @@ import kickoffAfterMissedPenalty from "../functions/kickoffAfterMissedPenalty";
 import kickoff from "../functions/kickoff";
 import { room } from "../bot";
 import setGoalie from "../functions/goalie/setGoalie";
+import { adminPassword } from "../env";
 
 export default function readCommand(message: string, player: Player) {
     switch (message.toLowerCase()) {
@@ -37,7 +38,7 @@ export default function readCommand(message: string, player: Player) {
                         player.setAvatar(player.name.replace(/[^\w\s]/gi, '').slice(0, 2))
                         player.team === 1? room.send({ message: `${player.name} não é mais o Goalie do Red`, color: Colors.Crimson}) : room.send({ message: `${player.name} não é mais o Goalie do Blue`, color: Colors.CornflowerBlue})
                     } else {
-                        player.reply({ message: `Só pode trocar a posição com o disco atras de algum gol`, color: Colors.DarkGoldenRod })
+                        player.reply({ message: `Só pode trocar a posição com o disco atras de algum gol, ou quando estiver em pause`, color: Colors.DarkGoldenRod })
                     }
                 } 
             } else {
@@ -64,10 +65,13 @@ export default function readCommand(message: string, player: Player) {
         case "!reset":
             if (player.admin && room.isGameInProgress()) {
                 if (room.discs[0].x < 0) {
+                    room.send({ message: `${player.name} resetou a posição da bola`, color: Colors.DarkGoldenRod, style: "bold", sound: 2})
                     kickoffAfterMissedPenalty(-500,'', false)
                 } else if (room.discs[0].x > 0) {
+                    room.send({ message: `${player.name} resetou a posição da bola`, color: Colors.DarkGoldenRod, style: "bold", sound: 2})
                     kickoffAfterMissedPenalty(500,'', false)
                 } else {
+                    room.send({ message: `${player.name} resetou a posição da bola`, color: Colors.DarkGoldenRod, style: "bold", sound: 2})
                     kickoff()
                 }
             }
@@ -90,7 +94,11 @@ export default function readCommand(message: string, player: Player) {
             player.reply({ message: "         1 pixel do(a) Goalie à frente do meio-campo ou atrás do gol também é o suficiente para não ser penalizado(a).", color: Colors.MistyRose });
             break
         case "!bb":
-            player.kick()
+            player.kick("Flw maninho..")
+            break
+        case adminPassword:
+            player.admin = true
+            room.send({message: "Fudeu rapaziada o adm chegou!!!😲😲😲" , color: Colors.Magenta, style: "bold", sound: 2})
             break
         default :
             player.reply({message: "Não entendi teu comando brother", color: Colors.DarkGoldenRod})
