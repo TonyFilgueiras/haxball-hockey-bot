@@ -23,8 +23,12 @@ export default function penaltyDetected(player: Player, penalty: string, team: 0
     if (!room.settings.disabledPenaltys) {
         setTimeout(() => {
             if (room.settings.penaltyDetected === 2) {
+                room.pause()
+                room.unpause()
                 setPenaltyRed()
             } else if (room.settings.penaltyDetected === 1) {
+                room.pause()
+                room.unpause()
                 setPenaltyBlue()
             }
 
@@ -36,7 +40,7 @@ export default function penaltyDetected(player: Player, penalty: string, team: 0
 export function setPenaltyRed() {
     try {
         room.settings.mode = "penred"
-const disc = room.discs[0]
+        const disc = room.discs[0]
         disc.color = 0
     
         setDiscPosition(disc, 230, 0)       
@@ -75,7 +79,7 @@ const disc = room.discs[0]
 export function setPenaltyBlue() {
     try {
         room.settings.mode = 'penblue'
-const disc = room.discs[0]
+        const disc = room.discs[0]
         disc.color = 0
         room.settings.penaltyKickers = 0
         room.settings.penaltyTakerTeam = 1
