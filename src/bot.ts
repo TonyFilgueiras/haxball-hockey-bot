@@ -16,9 +16,10 @@ import kickoff from "./functions/kickoff";
 import playerBump from "./functions/goalie/goalieBump";
 import penaltyTimer from "./functions/penalty/penaltyTimer";
 import missedPenalty from "./functions/penalty/MissedPenalty";
+import kickoffAfterMissedPenalty from "./functions/kickoffAfterMissedPenalty";
 
-
-// TENTAR FAZER A PAREDE NA FALTA
+// TENTAR FAZER A PAREDE NA FALTA (fdc isso por enquanto)
+// goaliebump detected add
 // FAZER SHOOTOUT NO OVERTIME OU COMO MODO
 
 export const room = new Room({
@@ -32,6 +33,7 @@ room.onPlayerJoin = function (player:Player) {
         player.admin = true
         room.setStadium(HockeyMap)
     } 
+    console.log(player)
     room.lockTeams()
     player.reply({message: "digite !help para mais informações....", color: Colors.Chartreuse, sound: 2})
     player.setAvatar(player.name.replace(/[^\w\s]/gi, '').slice(0, 2))
@@ -98,34 +100,45 @@ room.onStadiumChange = function (newStadiumName, byPlayer) {
 room.onPlayerBallKick = function (player) {
     if (player.team == 1) {
         if (!player.settings.goalie && !player.settings.penaltyGoalie) {
-            if (insideRedBox(player.x, player.y)) {
+            if (insideRedBox(player.x, player.y) && !room.settings.disabledPenaltys) {
                 penaltyDetected(player, "O animal pegou a bola dentro da área sem ser goleiro!", 1)
             }
             
         } else if (player.settings.goalie || player.settings.penaltyGoalie) {
             if (goalieOutsideBox(player)) {
                 const previousTeamTouchOnDisc = room.settings.lastTeamTouch
-                if (previousTeamTouchOnDisc !== player.team) {
+                if (previousTeamTouchOnDisc === 2 && !room.settings.disabledPenaltys) {
                     penaltyDetected(player, "O animal tocou no disco fora da area de goleiro apos o toque do adversário", 1)
                 }
             }
         }
     } else if (player.team == 2) {
         if (!player.settings.goalie && !player.settings.penaltyGoalie) {
-            if (insideBlueBox(player.x, player.y)) {
+            if (insideBlueBox(player.x, player.y) && !room.settings.disabledPenaltys) {
                 penaltyDetected(player, "O animal pegou a bola dentro da área sem ser goleiro!", 2)
             }
         } else if (player.settings.goalie || player.settings.penaltyGoalie) {
             if (goalieOutsideBox(player)) {
                 const previousTeamTouchOnDisc = room.settings.lastTeamTouch
-                if (previousTeamTouchOnDisc !== player.team) {
+                if (previousTeamTouchOnDisc === 1 && !room.settings.disabledPenaltys) {
                     penaltyDetected(player, "O animal tocou no disco fora da area de goleiro apos o toque do adversário", 2)   
                 }
             }
         }
     }
     if (room.settings.mode !== "game") {
+        const previousPlayerTouchOnDisc = room.settings.lastPlayerTouch
         detectLastPlayerTouch(player, true)
+        if (room.settings.penaltyKickerReleased && !room.settings.disabledPenaltys) {
+            kickoffAfterMissedPenalty(player.team ===1 ? 500: -500, "O jogador soltou o disco")
+        }else if (player.id !== previousPlayerTouchOnDisc) {
+            room.settings.penaltyKickers++
+            if (room.settings.penaltyKickers > 1 && !room.settings.disabledPenaltys) {
+                room.settings.penaltyKickers = 0
+                kickoffAfterMissedPenalty(player.team ===1 ? 500: -500, "Só pode um jogador bater o penal");
+            }
+
+        }
     }
     detectLastPlayerTouch(player)
 }
@@ -141,6 +154,7 @@ room.onTeamGoal = function (team) {
 
 room.onGameStart = function () {
     room.settings.penaltyTimer = 0
+    room.settings.penaltyKickers = 0
     kickoff()
     room.pause()
     room.send({message: "Cada time tem direito a um GO.... digite !go para ser o goleiro", color: Colors.Gold, style: "bold"})
