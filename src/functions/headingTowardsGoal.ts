@@ -11,6 +11,10 @@ export default function headingTowardsGoal(
     team == 2? goalXAxis = 760: goalXAxis = -760
     // Calculate time of intersection
     const t = (goalXAxis - xInitial) / xVelocity;
+
+    if (xInitial < -760 || xInitial > 760) {
+        return false
+    }
   
     // Calculate y-coordinate at time t using y-axis motion equation
     const yAtIntersection = yInitial + yVelocity * t;
