@@ -7,10 +7,11 @@ import { redTeam } from "../../players/redTeam";
 import { blueTeam } from "../../players/blueTeam";
 import { room } from "../../bot";
 import penaltyCarrierChange from "./penaltyCarrierChange";
+import penaltyTakerReleasedDisc from "./penaltyTakerReleasedDisc";
 
 export default function missedPenalty(mode: "penred" | "penblue") {
   const penaltyMissedEnabled =
-    !room.settings.penalty &&
+    !room.settings.penaltyDetected &&
     !room.settings.disabledPenaltys &&
     room.settings.penaltyTimer > 100;
 
@@ -44,6 +45,8 @@ export default function missedPenalty(mode: "penred" | "penblue") {
         redTeam.forEach((p) => {
           if (penaltyCarrierChange(p)) {
             kickoffAfterMissedPenalty(500, "Só pode um jogador bater o penal");
+          } else if (penaltyTakerReleasedDisc(p)) {
+            kickoffAfterMissedPenalty(500, "O jogador soltou o disco");
           }
         });
       }
@@ -62,6 +65,8 @@ export default function missedPenalty(mode: "penred" | "penblue") {
         blueTeam.forEach((p) => {
           if (penaltyCarrierChange(p)) {
             kickoffAfterMissedPenalty(-500, "Só pode um jogador bater o penal");
+          } else if (penaltyTakerReleasedDisc(p)) {
+            kickoffAfterMissedPenalty(-500, "O jogador soltou o disco");
           }
         });
       }

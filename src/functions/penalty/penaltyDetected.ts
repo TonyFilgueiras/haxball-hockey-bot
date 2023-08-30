@@ -5,30 +5,30 @@ import checkForGoalieSetting from "../goalie/checkForGoaliesetting";
 import { room } from "../../bot";
 import setDiscPosition from "../setDiscPosition";
 
-export default function penaltyDetected(player: Player, penalty: string, team: number) {
-    if (!room.settings.penalty && !room.settings.disabledPenaltys) {
+export default function penaltyDetected(player: Player, penalty: string, team: 0 | 1 | 2) {
+    if (!room.settings.penaltyDetected && !room.settings.disabledPenaltys) {
         room.send({ message: `Penalty do ${player.name}!`, color: team == 1 ? Colors.Crimson : Colors.CornflowerBlue, style: "bold", sound:2})
         room.send({message: `${penalty}`, color: team == 1? Colors.Crimson : Colors.CornflowerBlue, style: "bold"})
     }
-    room.settings.penalty = team;
-    if (room.settings.mode === "penblue" && room.settings.penalty === 1) {
+    room.settings.penaltyDetected = team;
+    if (room.settings.mode === "penblue" && room.settings.penaltyDetected === 1) {
         room.send({ message: `Gol automático!!`, color: team == 2 ? Colors.Crimson : Colors.CornflowerBlue, style: "bold", sound:2})
         setDiscPosition(room.discs[0], -755, 0, -1, 0)
     }
-    if (room.settings.mode === "penred" && room.settings.penalty === 2) {
+    if (room.settings.mode === "penred" && room.settings.penaltyDetected === 2) {
         room.send({ message: `Gol automático!`, color: team == 1 ? Colors.Crimson : Colors.CornflowerBlue, style: "bold", sound:2})
         setDiscPosition(room.discs[0], 755, 0, 1, 0)
     }
     
     if (!room.settings.disabledPenaltys) {
         setTimeout(() => {
-            if (room.settings.penalty === 2) {
+            if (room.settings.penaltyDetected === 2) {
                 setPenaltyRed()
-            } else if (room.settings.penalty === 1) {
+            } else if (room.settings.penaltyDetected === 1) {
                 setPenaltyBlue()
             }
 
-            room.settings.penalty = 0
+            room.settings.penaltyDetected = 0
         }, 2000)
     }
 }
@@ -36,7 +36,7 @@ export default function penaltyDetected(player: Player, penalty: string, team: n
 export function setPenaltyRed() {
     try {
         room.settings.mode = "penred"
-        const disc = room.discs[0]
+const disc = room.discs[0]
         disc.color = 0
     
         setDiscPosition(disc, 230, 0)       
@@ -75,7 +75,7 @@ export function setPenaltyRed() {
 export function setPenaltyBlue() {
     try {
         room.settings.mode = 'penblue'
-        const disc = room.discs[0]
+const disc = room.discs[0]
         disc.color = 0
         room.settings.penaltyKickers = 0
         room.settings.penaltyTakerTeam = 1

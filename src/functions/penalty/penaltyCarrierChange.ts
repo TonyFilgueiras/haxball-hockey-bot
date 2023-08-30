@@ -7,9 +7,10 @@ export default function penaltyCarrierChange(player: Player): boolean {
     const previousPlayerTouchOnDisc = room.settings.penaltyTakerId
     const previousTeamTouchOnDisc = room.settings.penaltyTakerTeam
 
-    if (touchedDisc(player, true) && player.id !== previousPlayerTouchOnDisc && player.team === previousTeamTouchOnDisc) {
+    if (touchedDisc(player, true) && player.id !== previousPlayerTouchOnDisc) {
         room.settings.penaltyKickers++
-        if (room.settings.penaltyKickers >= 1) {
+
+        if (room.settings.penaltyKickers > 1) {
             room.settings.penaltyKickers = 0
             return true
         }
