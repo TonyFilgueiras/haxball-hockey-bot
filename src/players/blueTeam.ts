@@ -10,3 +10,14 @@ export function updateBlueTeamPlayers(): void {
         blueTeam.push(player)
     } 
 }
+
+export function pickRandomBluePlayer(): Player | null {
+  
+    if (blueTeam.length === 0) {
+      return null; // No blue players found
+    }
+  
+    const randomIndex = Math.floor(Math.random() * blueTeam.length);
+    return blueTeam[randomIndex];
+  }
+    

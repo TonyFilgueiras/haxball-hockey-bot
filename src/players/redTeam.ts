@@ -11,3 +11,14 @@ export function updateRedTeamPlayers(): void {
         redTeam.push(player)
     } 
 }
+
+export function pickRandomRedPlayer(): Player | null {
+    
+    if (redTeam.length === 0) {
+      return null; // No red players found
+    }
+  
+    const randomIndex = Math.floor(Math.random() * redTeam.length);
+    return redTeam[randomIndex];
+  }
+    
