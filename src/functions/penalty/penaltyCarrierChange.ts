@@ -5,7 +5,6 @@ import touchedDisc from "../touchedDisc";
 
 export default function penaltyCarrierChange(player: Player): boolean {
     const previousPlayerTouchOnDisc = room.settings.penaltyTakerId
-    const previousTeamTouchOnDisc = room.settings.penaltyTakerTeam
 
     if (touchedDisc(player, true) && player.id !== previousPlayerTouchOnDisc) {
         room.settings.penaltyKickers++
