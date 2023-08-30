@@ -14,6 +14,7 @@ export default function kickoffAfterMissedPenalty(xAxis: 500 | -500, reasonMisse
         room.settings.disabledPenaltys = false
         room.settings.penaltyKickers = 0
         room.settings.penaltyTimer = 0
+        room.settings.penaltyKickerReleased = false
     
         room.settings.mode = "game"
         room.pause()
@@ -29,7 +30,7 @@ export default function kickoffAfterMissedPenalty(xAxis: 500 | -500, reasonMisse
         
         const topOrBottom = getRandom1OrMinus1();
     
-        const disc = room.discs[0]
+const disc = room.discs[0]
         disc.color = 0
         switch (xAxis) {
             case 500: 

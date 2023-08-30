@@ -8,7 +8,7 @@ import { room } from "../../bot";
 export default function goalieIllegalTouch(player: Player) {
     const previousTouchOnDisc = room.settings.lastTeamTouch;
 
-    if ((player.settings.goalie || player.settings.penaltyGoalie) && touchedDisc(player) && goalieOutsideBox(player) && room.settings.lastTeamTouch !== 0) {
+    if ((player.settings.goalie || player.settings.penaltyGoalie) && touchedDisc(player) && goalieOutsideBox(player) && previousTouchOnDisc !== 0) {
         if (previousTouchOnDisc !== player.team) {
             const penaltyMessage = "O animal tocou no disco fora da área de goleiro após o toque do adversário";
             penaltyDetected(player, penaltyMessage, player.team);

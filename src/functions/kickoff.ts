@@ -11,7 +11,10 @@ export default function kickoff() {
     room.settings.mode = "game"
     room.settings.disabledPenaltys = false
     room.settings.lastTeamTouch = 0
-    
+    room.settings.penaltyKickerReleased = false
+    room.settings.penaltyKickers = 0
+    room.settings.penaltyTimer = 0
+
 
     const disc = room.discs[0]
     disc.color = 0

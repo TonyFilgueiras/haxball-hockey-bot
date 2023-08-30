@@ -10,17 +10,14 @@ import { setPenaltyBlue, setPenaltyRed } from "../penalty/penaltyDetected";
 import { room } from "../../bot";
 
 export default function goalieBump(player: Player) {
-    const disc = room.discs[0]
+const disc = room.discs[0]
 
     for (const redPlayer of redTeam) {
         const isCloseEnough = player.distanceTo(redPlayer) < 1 && player.id !== redPlayer.id;
         const isHeadingTowardsGoal = calculateTotalSpeed(player.xspeed, player.yspeed) >= 0.2 && headingTowardsGoal(disc.x, disc.y, disc.xspeed, disc.yspeed, 1);
     
         if (player.team === 2 && (redPlayer.settings.goalie || redPlayer.settings.penaltyGoalie) && insideRedBox(redPlayer.x, redPlayer.y) && isCloseEnough && isHeadingTowardsGoal) {
-            disc.xspeed = 0;
-            disc.x = 130;
-    
-            if (!room.settings.disabledPenaltys && player.id !== room.settings.lastPlayerTouch) {
+            if (!room.settings.disabledPenaltys && player.id !== room.settings.lastPlayerTouch && redPlayer.id !== room.settings.lastPlayerTouch) {
                 room.pause();
                 room.unpause();
                 setPenaltyRed();
@@ -34,11 +31,9 @@ export default function goalieBump(player: Player) {
         const isHeadingTowardsGoal = calculateTotalSpeed(player.xspeed, player.yspeed) >= 0.2 && headingTowardsGoal(disc.x, disc.y, disc.xspeed, disc.yspeed, 2);
     
         if (player.team === 1 && (bluePlayer.settings.goalie || bluePlayer.settings.penaltyGoalie) && insideBlueBox(bluePlayer.x, bluePlayer.y) && isCloseEnough && isHeadingTowardsGoal) {
-            if (!room.settings.disabledPenaltys && player.id !== room.settings.lastPlayerTouch) {
+            if (!room.settings.disabledPenaltys && player.id !== room.settings.lastPlayerTouch && bluePlayer.id !== room.settings.lastPlayerTouch) {
                 room.pause();
                 room.unpause();
-                disc.x = -130;
-                disc.y = 0;
                 disc.xspeed = 0;
                 disc.yspeed = 0;
                 setPenaltyBlue();
