@@ -13,12 +13,13 @@ export function updateRedTeamPlayers(): void {
 }
 
 export function pickRandomRedPlayer(): Player | null {
+    const redPlayers = redTeam.filter((p) => p.settings.goalie === 0)
     
-    if (redTeam.length === 0) {
+    if (redPlayers.length === 0) {
       return null; // No red players found
     }
   
-    const randomIndex = Math.floor(Math.random() * redTeam.length);
-    return redTeam[randomIndex];
+    const randomIndex = Math.floor(Math.random() * redPlayers.length);
+    return redPlayers[randomIndex];
   }
     

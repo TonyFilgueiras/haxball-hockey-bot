@@ -12,12 +12,13 @@ export function updateBlueTeamPlayers(): void {
 }
 
 export function pickRandomBluePlayer(): Player | null {
+    const bluePlayers = blueTeam.filter((p) => p.settings.goalie === 0)
   
-    if (blueTeam.length === 0) {
+    if (bluePlayers.length === 0) {
       return null; // No blue players found
     }
   
-    const randomIndex = Math.floor(Math.random() * blueTeam.length);
-    return blueTeam[randomIndex];
+    const randomIndex = Math.floor(Math.random() * bluePlayers.length);
+    return bluePlayers[randomIndex];
   }
     
