@@ -1,6 +1,8 @@
 import { Colors, Player } from "haxball-extended-room"
 import { room } from "../../bot"
 import setDiscPosition from "../setDiscPosition"
+import { pickRandomRedPlayer, redTeam } from "../../players/redTeam"
+import { blueTeam, pickRandomBluePlayer } from "../../players/blueTeam"
 
 export default function setGoalie(player: Player) {
     var goalieTeam: 0 | 1 | 2 = 0
@@ -16,8 +18,12 @@ export default function setGoalie(player: Player) {
     player.reply({ message: "-       Zona ofensiva", color: player.team === 1 ? Colors.HotPink : Colors.DodgerBlue})
     player.reply({ message: "-       Zona atras do gol", color: player.team === 1 ? Colors.HotPink : Colors.DodgerBlue})
     player.reply({ message: "-       Ou quando um companheiro de equipe tocar por ultimo",  color: player.team === 1 ? Colors.HotPink : Colors.DodgerBlue})
-    room.send({ message: `${player.name} é o Goalie do Red`, color: player.team === 1 ? Colors.Crimson : Colors.CornflowerBlue })
+    room.send({ message: player.team === 1 ? `${player.name} é o Goalie do Red`:`${player.name} é o Goalie do Blue`, color: player.team === 1 ? Colors.Crimson : Colors.CornflowerBlue })
     if (room.scores.time < 2) {
         setDiscPosition(player, discPosition, 0)
+        if ((player.x < 130 || player.x > -130) && (player.y < 30 || player.y > -30) && (player.team === 1? redTeam.length > 1: blueTeam.length > 1)) {
+            var randomPlayer = player.team === 1 ? pickRandomRedPlayer() : pickRandomBluePlayer()
+            player.team === 1 ? setDiscPosition(randomPlayer, -40, 0)  : setDiscPosition(randomPlayer, 40, 0)
+        }
     }
 }
