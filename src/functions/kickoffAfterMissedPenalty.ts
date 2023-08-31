@@ -2,7 +2,6 @@ import { Colors } from "haxball-extended-room";
 import { redTeam, updateRedTeamPlayers } from "../players/redTeam";
 import { blueTeam, updateBlueTeamPlayers } from "../players/blueTeam";
 import { room } from "../bot";
-import { error } from "console";
 import setDiscPosition from "./setDiscPosition";
 
 export default function kickoffAfterMissedPenalty(xAxis: 500 | -500, reasonMissedPenalty?: string, afterPenalty: boolean = true) {
@@ -15,6 +14,7 @@ export default function kickoffAfterMissedPenalty(xAxis: 500 | -500, reasonMisse
         room.settings.penaltyKickers = 0
         room.settings.penaltyTimer = 0
         room.settings.penaltyKickerReleased = false
+        room.settings.penaltyDetected = 0
     
         room.settings.mode = "game"
         room.pause()

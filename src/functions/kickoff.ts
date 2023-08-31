@@ -14,6 +14,7 @@ export default function kickoff() {
     room.settings.penaltyKickerReleased = false
     room.settings.penaltyKickers = 0
     room.settings.penaltyTimer = 0
+    room.settings.penaltyDetected = 0
 
 
     const disc = room.discs[0]
