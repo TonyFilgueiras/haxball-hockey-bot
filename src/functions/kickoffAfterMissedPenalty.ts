@@ -15,6 +15,8 @@ export default function kickoffAfterMissedPenalty(xAxis: 500 | -500, reasonMisse
         room.settings.penaltyTimer = 0
         room.settings.penaltyKickerReleased = false
         room.settings.penaltyDetected = 0
+        room.settings.playerBumpedBlueGoalie = 0
+        room.settings.playerBumpedRedGoalie = 0
     
         room.settings.mode = "game"
         room.pause()

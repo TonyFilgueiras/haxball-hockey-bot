@@ -1,6 +1,8 @@
 import { Player } from "haxball-extended-room";
 import { room } from "../../bot";
 import touchedDisc from "../touchedDisc";
+import { blueTeam } from "../../players/blueTeam";
+import { redTeam } from "../../players/redTeam";
 
 export default function penaltyTakerReleasedDisc(player: Player): boolean{
     if (touchedDisc(player)) {

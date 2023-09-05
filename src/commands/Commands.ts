@@ -16,22 +16,26 @@ export default function readCommand(message: string, player: Player) {
                 var redHasGoalie = checkForGoalieSetting(room.players.red(), 1)
                 if (redHasGoalie) {
                     player.reply({message: "Ja tem goleiro no Red", color: Colors.HotPink} )
-                } else {
+                } else if (room.isGameInProgress()){
                     setGoalie(player)
+                } else {
+                    player.reply({ message: `Espera o jogo começar`, color: Colors.HotPink })
                 }
             } else if (player.team == 2) {
                 var blueHasGoalie = checkForGoalieSetting(room.players.blue(), 2)
                 if (blueHasGoalie) {
                     player.reply({ message: "Ja tem goleiro no Blue", color: Colors.DodgerBlue })
-                } else {
+                } else if (room.isGameInProgress()){
                     setGoalie(player)
-                }       
+                } else {
+                    player.reply({ message: `Espera o jogo começar`, color: Colors.DodgerBlue })
+                }     
             } else {
                 player.reply({ message: "Tu ta no spec doidão", color: Colors.DarkGoldenRod})
             }
             break
-            case "!li":
-                if (player.settings.goalie) {
+        case "!li":
+            if (player.settings.goalie) {
                 if (room.isGameInProgress()) {
                     if (room.discs[0].x < -760 || room.discs[0].x > 760 || room.paused) {
                         player.settings.goalie = 0
@@ -40,10 +44,15 @@ export default function readCommand(message: string, player: Player) {
                     } else {
                         player.reply({ message: `Só pode trocar a posição com o disco atras de algum gol, ou quando estiver em pause`, color: Colors.DarkGoldenRod })
                     }
-                } 
+                } else {
+                    player.settings.goalie = 0
+                    player.setAvatar(player.name.replace(/[^\w\s]/gi, '').slice(0, 2))
+                    player.team === 1? room.send({ message: `${player.name} não é mais o Goalie do Red`, color: Colors.Crimson}) : room.send({ message: `${player.name} não é mais o Goalie do Blue`, color: Colors.CornflowerBlue})
+                }
             } else {
-                player.reply({ message: `Tu nem era goleiro.. xiu`, color: Colors.DarkGoldenRod })
+               player.reply({ message: `Tu nem era goleiro.. xiu`, color: Colors.DarkGoldenRod })
             }
+
             break
         case "!penred":
             if (player.admin && room.isGameInProgress()) {
@@ -59,6 +68,7 @@ export default function readCommand(message: string, player: Player) {
             break
         case "!help":
         case "!commands":
+        case "!ajuda":
             player.reply({ message: "Comandos disponiveis: !go, !li, !penred, !penblue, !help, !disc, !resetball,!rules", color: Colors.DarkGoldenRod})
             break 
         case "!resetball":

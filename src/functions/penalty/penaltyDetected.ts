@@ -49,6 +49,7 @@ export function setPenaltyRed() {
         room.settings.penaltyTakerTeam = 2
         room.settings.penaltyTakerId = 0
         room.settings.penaltyTimer = 0
+        room.settings.disabledPenaltys = false
         
         for (let i = 0; i < redTeam.length; i++){
             setDiscPosition(redTeam[i], -70, (i - 2) * 50) 
@@ -85,6 +86,7 @@ export function setPenaltyBlue() {
         room.settings.penaltyTakerTeam = 1
         room.settings.penaltyTakerId = 0
         room.settings.penaltyTimer = 0
+        room.settings.disabledPenaltys = false
 
         setDiscPosition(disc, -230, 0) 
         
