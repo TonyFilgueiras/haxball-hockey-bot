@@ -88,7 +88,7 @@ export default function readCommand(message: string, player: Player) {
             break
         case "!disc":
         case "!discord":
-            player.reply({ message: "https://discord.gg/SHbvtrt8", color: Colors.Azure, style: "bold" })
+            player.reply({ message: "discord.gg/VeMMMtx2zc", color: Colors.Azure, style: "bold" })
             break
         case "!rules":
         case "!regras":

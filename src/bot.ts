@@ -39,7 +39,7 @@ room.onPlayerJoin = function (player:Player) {
     // room.setTimeLimit(0)
     // room.setScoreLimit(0)
     player.reply({ message: "digite !help para mais informações....", color: Colors.Chartreuse, sound: 2 })
-    player.reply({ message: "Entre no nosso discord - https://discord.gg/SHbvtrt8", color: Colors.Azure, style: "bold" })
+    player.reply({ message: "Entre no nosso discord - discord.gg/VeMMMtx2zc", color: Colors.Azure, style: "bold" })
     player.setAvatar(player.name.replace(/[^\w\s]/gi, '').slice(0, 2))
     playersList.push(player)
 }
