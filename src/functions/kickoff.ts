@@ -34,7 +34,7 @@ export default function kickoff() {
         
         if (!randomRedPlayer.settings.goalie) {
             if (redPlayerSorted == 0) {
-                setDiscPosition(randomRedPlayer, -40, 0)
+                setDiscPosition(randomRedPlayer, -40, 1)
             } else if (redPlayerSorted == 1) {
                 setDiscPosition(randomRedPlayer, -20, -150)
                 
@@ -62,7 +62,7 @@ export default function kickoff() {
         
         if (!randomBluePlayer.settings.goalie) {
             if (bluePlayerSorted == 0) {
-                setDiscPosition(randomBluePlayer, 40, 0)               
+                setDiscPosition(randomBluePlayer, 40, -1)               
             } else if (bluePlayerSorted == 1) {
                 setDiscPosition(randomBluePlayer, 20, 150)               
             } else if (bluePlayerSorted == 2) {

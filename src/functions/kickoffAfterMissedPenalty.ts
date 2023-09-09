@@ -45,7 +45,7 @@ const disc = room.discs[0]
                     
                     if (!randomRedPlayer.settings.goalie) {
                         if (redPlayerSorted == 0) {
-                            setDiscPosition(randomRedPlayer, 460, 210 * topOrBottom)                            
+                            setDiscPosition(randomRedPlayer, 460, 211 * topOrBottom)                            
                         } else if (redPlayerSorted == 1) {
                             setDiscPosition(randomRedPlayer, 390, 100 * topOrBottom)                                                        
                         } else if (redPlayerSorted == 2) {
@@ -72,7 +72,7 @@ const disc = room.discs[0]
                     
                     if (!randomBluePlayer.settings.goalie) {
                         if (bluePlayerSorted == 0) {
-                            setDiscPosition(randomBluePlayer, 540, 210 * topOrBottom)                            
+                            setDiscPosition(randomBluePlayer, 540, 209 * topOrBottom)                            
                         } else if (bluePlayerSorted == 1) {
                             setDiscPosition(randomBluePlayer, 610, 100 * topOrBottom)                                                        
                         } else if (bluePlayerSorted == 2) {
@@ -99,7 +99,7 @@ const disc = room.discs[0]
                     
                     if (!randomBluePlayer.settings.goalie) {
                         if (bluePlayerSorted == 0) {
-                            setDiscPosition(randomBluePlayer, -460, 210 * topOrBottom)                            
+                            setDiscPosition(randomBluePlayer, -460, 211 * topOrBottom)                            
                         } else if (bluePlayerSorted == 1) {
                             setDiscPosition(randomBluePlayer, -390, 100 * topOrBottom)                                                        
                         } else if (bluePlayerSorted == 2) {
@@ -127,7 +127,7 @@ const disc = room.discs[0]
                     
                     if (!randomRedPlayer.settings.goalie) {
                         if (redPlayerSorted == 0) {
-                            setDiscPosition(randomRedPlayer, -540, 210 * topOrBottom)                            
+                            setDiscPosition(randomRedPlayer, -540, 209 * topOrBottom)                            
                         } else if (redPlayerSorted == 1) {
                             setDiscPosition(randomRedPlayer, -610, 100 * topOrBottom)                                                        
                         } else if (redPlayerSorted == 2) {
