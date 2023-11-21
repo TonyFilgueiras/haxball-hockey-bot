@@ -24,7 +24,7 @@ import { message } from "gulp-typescript/release/utils";
 // FAZER SHOOTOUT NO OVERTIME OU COMO MODO
 
 export const room = new Room({
-    public: false,
+    public: true,
     maxPlayers: 20,
     roomName: `🏑 Ice Hockey [beta]`
 });
