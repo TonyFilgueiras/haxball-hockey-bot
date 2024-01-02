@@ -26,7 +26,8 @@ import { message } from "gulp-typescript/release/utils";
 export const room = new Room({
     public: true,
     maxPlayers: 20,
-    roomName: `🏑 Ice Hockey [beta]`
+    roomName: `🏑 Ice Hockey [beta]`,
+    geo: {code: 'br', lat: - 22.908333, lon: -43.196388}
 });
 
 room.onPlayerJoin = function (player:Player) {
