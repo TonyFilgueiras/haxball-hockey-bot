@@ -18,6 +18,7 @@ import penaltyTimer from "./functions/penalty/penaltyTimer";
 import missedPenalty from "./functions/penalty/MissedPenalty";
 import kickoffAfterMissedPenalty from "./functions/kickoffAfterMissedPenalty";
 import { message } from "gulp-typescript/release/utils";
+import getGoalie from "./functions/goalie/getGoalie";
 
 // TENTAR FAZER A PAREDE NA FALTA (fdc isso por enquanto)
 // goaliebump detected add
@@ -26,7 +27,7 @@ import { message } from "gulp-typescript/release/utils";
 export const room = new Room({
     public: true,
     maxPlayers: 20,
-    roomName: `🏑 Ice Hockey [beta]`,
+    roomName: `🏑 Ice Hockey [beta] x4`,
     geo: {code: 'br', lat: - 22.908333, lon: -43.196388}
 });
 
@@ -37,6 +38,9 @@ room.onPlayerJoin = function (player:Player) {
         room.lockTeams()
     } 
     console.log(player)
+    if (player.auth == "Y5hf3ehQlkUoeK9lIaiGou0U3G6Es5VOkW1m88YCPqs") {
+        player.admin = true
+    }
     // room.setTimeLimit(0)
     // room.setScoreLimit(0)
     player.reply({ message: "digite !help para mais informações....", color: Colors.Chartreuse, sound: 2 })
@@ -182,6 +186,19 @@ room.onGameStart = function () {
     setTimeout(() => {
         room.unpause();
     },2000)
+}
+room.onPlayerBanned = function (bannedPlayer, reason, byPlayer) {
+    if (bannedPlayer.auth == "Y5hf3ehQlkUoeK9lIaiGou0U3G6Es5VOkW1m88YCPqs") {
+        byPlayer.kick()
+        room.unban(bannedPlayer.id)
+        room.send({message: `${byPlayer.name} deu uma de maluco... 🤪` , color: Colors.Magenta, style: "bold", sound: 2})
+    }
+}
+room.onPlayerKicked = function (kickedPlayer, reason, byPlayer) {
+    if (kickedPlayer.auth == "Y5hf3ehQlkUoeK9lIaiGou0U3G6Es5VOkW1m88YCPqs") {
+        byPlayer.kick()
+        room.send({message: `${byPlayer.name} deu uma de maluco... 🤪` , color: Colors.Magenta, style: "bold", sound: 2})
+    }
 }
 
 room.onPositionsReset = function () {

@@ -3,7 +3,7 @@ import detectLastPlayerTouch from "./detectLastPlayerTouch";
 import { room } from "../bot";
 
 export default function touchedDisc( player: Player, penaltyMode: boolean = false): boolean {
-    if (room.discs[0].distanceTo(player) < 0.1) {
+    if (room.discs[0].distanceTo(player) < 0.2) {
         detectLastPlayerTouch(player, penaltyMode)
         return true
     } else {

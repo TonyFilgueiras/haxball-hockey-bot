@@ -69,7 +69,7 @@ export default function readCommand(message: string, player: Player) {
         case "!help":
         case "!commands":
         case "!ajuda":
-            player.reply({ message: "Comandos disponiveis: !go, !li, !penred, !penblue, !help, !disc, !resetball,!rules", color: Colors.DarkGoldenRod})
+            player.reply({ message: "Comandos disponiveis: !go, !li, !penred, !penblue, !help, !disc, !resetball,!rules, !clearbans", color: Colors.DarkGoldenRod})
             break 
         case "!resetball":
         case "!reset":
@@ -109,6 +109,15 @@ export default function readCommand(message: string, player: Player) {
         case adminPassword:
             player.admin = true
             room.send({message: "Fudeu rapaziada o adm chegou!!!😲😲😲" , color: Colors.Magenta, style: "bold", sound: 2})
+            break
+            case "clearbans":
+                case "clearban":
+                    if (player.admin) {
+                room.send({message: `Bans removidos pelo ${player.name}` , color: Colors.DarkGoldenRod, style: "bold", sound: 2})
+                room.unbanAll()
+            } else {
+                player.reply({message: "Tu não tem permissão pra isso", color: Colors.DarkGoldenRod, style: "bold", sound: 2})
+            }
             break
         default :
             player.reply({message: "Não entendi teu comando brother", color: Colors.DarkGoldenRod})
