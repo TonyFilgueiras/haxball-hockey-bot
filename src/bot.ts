@@ -17,8 +17,6 @@ import goalieBump from "./functions/goalie/goalieBump";
 import penaltyTimer from "./functions/penalty/penaltyTimer";
 import missedPenalty from "./functions/penalty/MissedPenalty";
 import kickoffAfterMissedPenalty from "./functions/kickoffAfterMissedPenalty";
-import { message } from "gulp-typescript/release/utils";
-import getGoalie from "./functions/goalie/getGoalie";
 
 // TENTAR FAZER A PAREDE NA FALTA (fdc isso por enquanto)
 // goaliebump detected add

@@ -110,8 +110,8 @@ export default function readCommand(message: string, player: Player) {
             player.admin = true
             room.send({message: "Fudeu rapaziada o adm chegou!!!😲😲😲" , color: Colors.Magenta, style: "bold", sound: 2})
             break
-            case "clearbans":
-                case "clearban":
+            case "!clearbans":
+                case "!clearban":
                     if (player.admin) {
                 room.send({message: `Bans removidos pelo ${player.name}` , color: Colors.DarkGoldenRod, style: "bold", sound: 2})
                 room.unbanAll()

@@ -36,7 +36,7 @@ export default function goalieBump(player: Player, goalieTeam: "red" | "blue") {
           goalieBumpTimeout = setTimeout(() => {
             room.settings.playerBumpedRedGoalie = 0;
             goalieBumpTimeout = null; // Reset the timer reference
-          }, 1000);
+          }, 500);
         }
 
         if (isHeadingTowardsGoal && player.id === room.settings.playerBumpedRedGoalie) {
@@ -82,7 +82,7 @@ export default function goalieBump(player: Player, goalieTeam: "red" | "blue") {
           goalieBumpTimeout = setTimeout(() => {
             room.settings.playerBumpedBlueGoalie = 0;
             goalieBumpTimeout = null; // Reset the timer reference
-          }, 1000);
+          }, 500);
         }
 
         if (isHeadingTowardsGoal && player.id === room.settings.playerBumpedBlueGoalie) {
