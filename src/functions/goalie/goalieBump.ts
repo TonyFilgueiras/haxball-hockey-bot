@@ -23,7 +23,9 @@ export default function goalieBump(player: Player, goalieTeam: "red" | "blue") {
           player.distanceTo(redGoalie) < 0.1 &&
           calculateTotalSpeed(player.xspeed, player.yspeed) >= 0.2 &&
           player.team === 2 &&
-          insideRedBox(redGoalie.x, redGoalie.y);
+          insideRedBox(redGoalie.x, redGoalie.y) &&
+          player.id !== room.settings.lastPlayerTouch &&
+          redGoalie?.id !== room.settings.lastPlayerTouch
 
         const isHeadingTowardsGoal = headingTowardsGoal(disc.x, disc.y, disc.xspeed, disc.yspeed, 1);
 
@@ -40,7 +42,7 @@ export default function goalieBump(player: Player, goalieTeam: "red" | "blue") {
         }
 
         if (isHeadingTowardsGoal && player.id === room.settings.playerBumpedRedGoalie) {
-          if (!room.settings.disabledPenaltys && player.id !== room.settings.lastPlayerTouch && redGoalie?.id !== room.settings.lastPlayerTouch) {
+          if (!room.settings.disabledPenaltys) {
             clearTimeout(goalieBumpTimeout); // Clear the existing timeout
             room.settings.playerBumpedRedGoalie = 0;
             room.settings.disabledPenaltys = true;
@@ -68,7 +70,9 @@ export default function goalieBump(player: Player, goalieTeam: "red" | "blue") {
           player.distanceTo(blueGoalie) < 0.1 &&
           calculateTotalSpeed(player.xspeed, player.yspeed) >= 0.2 &&
           player.team === 1 &&
-          insideBlueBox(blueGoalie.x, blueGoalie.y);
+          insideBlueBox(blueGoalie.x, blueGoalie.y) &&
+          player.id !== room.settings.lastPlayerTouch &&
+          blueGoalie?.id !== room.settings.lastPlayerTouch
 
         const isHeadingTowardsGoal = headingTowardsGoal(disc.x, disc.y, disc.xspeed, disc.yspeed, 2);
 
@@ -86,7 +90,7 @@ export default function goalieBump(player: Player, goalieTeam: "red" | "blue") {
         }
 
         if (isHeadingTowardsGoal && player.id === room.settings.playerBumpedBlueGoalie) {
-          if (!room.settings.disabledPenaltys && player.id !== room.settings.lastPlayerTouch && blueGoalie?.id !== room.settings.lastPlayerTouch) {
+          if (!room.settings.disabledPenaltys) {
             clearTimeout(goalieBumpTimeout); // Clear the existing timeout
             room.settings.playerBumpedBlueGoalie = 0;
             room.settings.disabledPenaltys = true;

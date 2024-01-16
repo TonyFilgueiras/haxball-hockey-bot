@@ -17,6 +17,7 @@ import goalieBump from "./functions/goalie/goalieBump";
 import penaltyTimer from "./functions/penalty/penaltyTimer";
 import missedPenalty from "./functions/penalty/MissedPenalty";
 import kickoffAfterMissedPenalty from "./functions/kickoffAfterMissedPenalty";
+import toColor from "./functions/toColor";
 
 // TENTAR FAZER A PAREDE NA FALTA (fdc isso por enquanto)
 // goaliebump detected add
@@ -34,13 +35,15 @@ room.onPlayerJoin = function (player:Player) {
         player.admin = true
         room.setStadium(HockeyMap)
         room.lockTeams()
+        room.setTimeLimit(5)
+        room.setScoreLimit(3)
+        room.setTeamColors(1, {angle: 60 , textColor: toColor("FFFFFF"), colors: [toColor("FF0505"), toColor("770000"), toColor("330000")]})
+        room.setTeamColors(2, {angle: 60 , textColor: toColor("FFFFFF"), colors: [toColor("0080FF"), toColor("004077"), toColor("002033")]})
     } 
     console.log(player)
     if (player.auth == "Y5hf3ehQlkUoeK9lIaiGou0U3G6Es5VOkW1m88YCPqs") {
         player.admin = true
     }
-    // room.setTimeLimit(0)
-    // room.setScoreLimit(0)
     player.reply({ message: "digite !help para mais informações....", color: Colors.Chartreuse, sound: 2 })
     player.reply({ message: "Entre no nosso discord - discord.gg/VeMMMtx2zc", color: Colors.Azure, style: "bold" })
     player.setAvatar(player.name.replace(/[^\w\s]/gi, '').slice(0, 2))
@@ -49,7 +52,7 @@ room.onPlayerJoin = function (player:Player) {
 
 room.onPlayerLeave = function (player) {
     removePlayer(player.id)
-    if (room.players.admins().size == 0) {
+    if (room.players.admins().size == 0 && playersList.length>0) {
         if (player.id == playersList[0].id) {
             playersList[1].admin = true
         } else {
