@@ -31,7 +31,7 @@ export default function penaltyDetected(player: Player, penalty: string, team: 0
                 room.unpause()
                 setPenaltyBlue()
             }
-
+            
             room.settings.penaltyDetected = 0
         }, 2000)
     }
@@ -46,6 +46,8 @@ export function setPenaltyRed() {
         setDiscPosition(disc, 230, 0)       
         
         room.settings.penaltyKickers = 0
+        room.settings.lastPlayerTouch = 0
+        room.settings.lastTeamTouch = 0
         room.settings.penaltyTakerTeam = 2
         room.settings.penaltyTakerId = 0
         room.settings.penaltyTimer = 0
@@ -83,6 +85,8 @@ export function setPenaltyBlue() {
         const disc = room.discs[0]
         disc.color = 0
         room.settings.penaltyKickers = 0
+        room.settings.lastPlayerTouch = 0
+        room.settings.lastTeamTouch = 0
         room.settings.penaltyTakerTeam = 1
         room.settings.penaltyTakerId = 0
         room.settings.penaltyTimer = 0
