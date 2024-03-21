@@ -19,14 +19,12 @@ import missedPenalty from "./functions/penalty/MissedPenalty";
 import kickoffAfterMissedPenalty from "./functions/kickoffAfterMissedPenalty";
 import toColor from "./functions/toColor";
 
-// TENTAR FAZER A PAREDE NA FALTA (fdc isso por enquanto)
-// goaliebump detected add
 // FAZER SHOOTOUT NO OVERTIME OU COMO MODO
 
 export const room = new Room({
     public: true,
     maxPlayers: 20,
-    roomName: `🏑 Ice Hockey [beta] x4`,
+    roomName: `🏑 Ice Hockey x4`,
     geo: {code: 'br', lat: - 22.908333, lon: -43.196388}
 });
 
@@ -41,7 +39,7 @@ room.onPlayerJoin = function (player:Player) {
         room.setTeamColors(2, {angle: 60 , textColor: toColor("FFFFFF"), colors: [toColor("0080FF"), toColor("004077"), toColor("002033")]})
     } 
     console.log(player)
-    if (player.auth == "Y5hf3ehQlkUoeK9lIaiGou0U3G6Es5VOkW1m88YCPqs") {
+    if (player.auth == "09_7JC9mBNvsAIm5r36OWC9cmZ-HrUIbdGe8e5axVCw") {
         player.admin = true
     }
     player.reply({ message: "digite !help para mais informações....", color: Colors.Chartreuse, sound: 2 })
@@ -189,14 +187,14 @@ room.onGameStart = function () {
     },2000)
 }
 room.onPlayerBanned = function (bannedPlayer, reason, byPlayer) {
-    if (bannedPlayer.auth == "Y5hf3ehQlkUoeK9lIaiGou0U3G6Es5VOkW1m88YCPqs") {
+    if (bannedPlayer.auth == "09_7JC9mBNvsAIm5r36OWC9cmZ-HrUIbdGe8e5axVCw") {
         byPlayer.kick()
         room.unban(bannedPlayer.id)
         room.send({message: `${byPlayer.name} deu uma de maluco... 🤪` , color: Colors.Magenta, style: "bold", sound: 2})
     }
 }
 room.onPlayerKicked = function (kickedPlayer, reason, byPlayer) {
-    if (kickedPlayer.auth == "Y5hf3ehQlkUoeK9lIaiGou0U3G6Es5VOkW1m88YCPqs") {
+    if (kickedPlayer.auth == "09_7JC9mBNvsAIm5r36OWC9cmZ-HrUIbdGe8e5axVCw") {
         byPlayer.kick()
         room.send({message: `${byPlayer.name} deu uma de maluco... 🤪` , color: Colors.Magenta, style: "bold", sound: 2})
     }
