@@ -1,205 +1,76 @@
-import { ChatStyle, Colors, Player, Room } from "haxball-extended-room";
-import HockeyMap from "./maps/hockey.json"
-import insideBlueBox from "./functions/insideBlueBox";
-import insideRedBox from "./functions/insideRedBox";
-import readCommand from "./commands/Commands";
-import touchedDisc from "./functions/touchedDisc";
-import penaltyDetected, { setPenaltyBlue, setPenaltyRed } from "./functions/penalty/penaltyDetected";
-import { playersList, removePlayer } from "./players/players";
-import { redTeam, updateRedTeamPlayers } from "./players/redTeam";
-import { blueTeam, updateBlueTeamPlayers } from "./players/blueTeam";
-import goalieIllegalTouch, { goalieOutsideBox } from "./functions/goalie/goalieIllegalTouch";
-import detectLastPlayerTouch from "./functions/detectLastPlayerTouch";
-import illegalTouchInRedBox from "./functions/illegalTouchInRedBox";
-import illegalTouchInBlueBox from "./functions/illegalTouchInBlueBox";
-import kickoff from "./functions/kickoff";
-import goalieBump from "./functions/goalie/goalieBump";
-import penaltyTimer from "./functions/penalty/penaltyTimer";
-import missedPenalty from "./functions/penalty/MissedPenalty";
-import kickoffAfterMissedPenalty from "./functions/kickoffAfterMissedPenalty";
-import toColor from "./functions/toColor";
+import yargs from 'yargs'
+import { hideBin } from 'yargs/helpers'
 
-// FAZER SHOOTOUT NO OVERTIME OU COMO MODO
+import startHaxball from "./haxball/Haxball.js";
 
-export const room = new Room({
-    public: true,
-    maxPlayers: 20,
-    roomName: `🏑 Ice Hockey x4`,
-    geo: {code: 'br', lat: - 22.908333, lon: -43.196388}
-});
+import Room from "./core/Room";
+import { AFK } from "./modules/administration/AFK";
+import Game from "./modules/Game";
 
-room.onPlayerJoin = function (player:Player) {
-    if (room.players.admins().size == 0) {
-        player.admin = true
-        room.setStadium(HockeyMap)
-        room.lockTeams()
-        room.setTimeLimit(5)
-        room.setScoreLimit(3)
-        room.setTeamColors(1, {angle: 60 , textColor: toColor("FFFFFF"), colors: [toColor("FF0505"), toColor("770000"), toColor("330000")]})
-        room.setTeamColors(2, {angle: 60 , textColor: toColor("FFFFFF"), colors: [toColor("0080FF"), toColor("004077"), toColor("002033")]})
-    } 
-    console.log(player)
-    if (player.auth == "09_7JC9mBNvsAIm5r36OWC9cmZ-HrUIbdGe8e5axVCw") {
-        player.admin = true
-    }
-    player.reply({ message: "digite !help para mais informações....", color: Colors.Chartreuse, sound: 2 })
-    player.reply({ message: "Entre no nosso discord - discord.gg/VeMMMtx2zc", color: Colors.Azure, style: "bold" })
-    player.setAvatar(player.name.replace(/[^\w\s]/gi, '').slice(0, 2))
-    playersList.push(player)
-}
+import { BetterChat } from "./modules/administration/BetterChat";
+import { Admin } from "./modules/administration/Admin";
+import Version from "./modules/administration/Version";
+import Discord from "./modules/administration/Discord";
+import AntiFake from "./modules/administration/AntiFake";
+import Log from "./modules/administration/Log";
+import Tutorial from "./modules/administration/Tutorial";
 
-room.onPlayerLeave = function (player) {
-    removePlayer(player.id)
-    if (room.players.admins().size == 0 && playersList.length>0) {
-        if (player.id == playersList[0].id) {
-            playersList[1].admin = true
-        } else {
-            playersList[0].admin = true
+yargs(hideBin(process.argv))
+    .command('open <token>', 'Open the room', {
+        geo: {
+            alias: "g",
+            type: "array"
+        },
+        test: {
+            alias: "t",
+            type: "boolean"
+        },
+        proxy: {
+            alias: "p",
+            type: "string"
+        },
+        closed: {
+            alias: "c",
+            type: "boolean"
         }
-    } 
-    updateBlueTeamPlayers()
-    updateRedTeamPlayers()
-    if (room.settings.mode === "penred" && (player.settings.goalie || player.settings.penaltyGoalie)) {
-        room.send({message: "Goleiro saiu no meio da cobrança", color :Colors.Crimson , style: "bold", sound:2})
-        setPenaltyRed()
-    } else if (room.settings.mode === "penblue" && (player.settings.goalie || player.settings.penaltyGoalie)) {
-        room.send({message: "Goleiro saiu no meio da cobrança", color :Colors.CornflowerBlue , style: "bold", sound:2})
-        setPenaltyBlue()
-    }
-}
+    }, (argv) => {
+        startHaxball(argv.proxy).then((HBInit: any) => {
+            run(HBInit, argv.token as string, argv.closed, argv.test, argv.geo as string[]);
+        });
+    })
+    .demandCommand(1)
+    .parse();
 
-room.onPlayerTeamChange = function (player) {
-    player.settings.goalie = 0
-        player.setAvatar(player.name.replace(/[^\w\s]/gi, '').slice(0, 2))
-        updateRedTeamPlayers()
-    updateBlueTeamPlayers()
-}
+function run(HBInit: any, token: string, isClosed?: boolean, testMode?: boolean, geo?: string[]) {
+    const room = new Room(HBInit, {
+        roomName: `🏑 Ice Hockey x4 beta`,
+        maxPlayers: 16,
+        public: true,
+        geo: geo ? { code: geo[0], lat: parseFloat(geo[1]), lon: parseFloat(geo[2]) } : undefined,
+        token
+    });
 
-room.onGameTick = function () {
-    if (room.settings.mode === "penred") {
-        penaltyTimer()
-        missedPenalty("penred")
-    } else if (room.settings.mode === "penblue") {
-        penaltyTimer()
-        missedPenalty("penblue")
-    }
-    for (let i = 0; i < redTeam.length; i++){
-        goalieIllegalTouch(redTeam[i])
-        illegalTouchInRedBox(redTeam[i])
-        touchedDisc(redTeam[i])
-        goalieBump(redTeam[i], "blue")
-    }
-    for (let i = 0; i < blueTeam.length; i++) { 
-        goalieIllegalTouch(blueTeam[i])
-        illegalTouchInBlueBox(blueTeam[i])  
-        touchedDisc(blueTeam[i])
-        goalieBump(blueTeam[i], "red")
-    }
-}
+    room.setPlayerChat(false);
 
-room.onPlayerChat = function (player, message) {
-    if (message.startsWith("!")) {
-        readCommand(message, player)
-        return false
+    if (!testMode) {
+        room.module(AntiFake);
     }
-    if (room.settings.chatmuted) return false
-}
 
-room.onStadiumChange = function (newStadiumName, byPlayer) {
-    if (byPlayer) {
-        room.setStadium(HockeyMap)
-    }
-}
+    // if (process.env.ENABLE_LOG == "true") {
+    //     room.module(Log);
+    // }
 
-room.onPlayerBallKick = function (player) {
-    if (player.team == 1) {
-        if (!player.settings.goalie && !player.settings.penaltyGoalie) {
-            if (insideRedBox(player.x, player.y) && !room.settings.disabledPenaltys) {
-                penaltyDetected(player, "O animal pegou a bola dentro da área sem ser goleiro!", 1)
-            }
-            
-        } else if (player.settings.goalie || player.settings.penaltyGoalie) {
-            if (goalieOutsideBox(player)) {
-                const previousTeamTouchOnDisc = room.settings.lastTeamTouch
-                if (previousTeamTouchOnDisc === 2 && !room.settings.disabledPenaltys) {
-                    penaltyDetected(player, "O animal tocou no disco fora da area de goleiro apos o toque do adversário", 1)
-                }
-            }
-        }
-    } else if (player.team == 2) {
-        if (!player.settings.goalie && !player.settings.penaltyGoalie) {
-            if (insideBlueBox(player.x, player.y) && !room.settings.disabledPenaltys) {
-                penaltyDetected(player, "O animal pegou a bola dentro da área sem ser goleiro!", 2)
-            }
-        } else if (player.settings.goalie || player.settings.penaltyGoalie) {
-            if (goalieOutsideBox(player)) {
-                const previousTeamTouchOnDisc = room.settings.lastTeamTouch
-                if (previousTeamTouchOnDisc === 1 && !room.settings.disabledPenaltys) {
-                    penaltyDetected(player, "O animal tocou no disco fora da area de goleiro apos o toque do adversário", 2)   
-                }
-            }
-        }
-    }
-    if (room.settings.mode !== "game") {
-        const previousPlayerTouchOnDisc = room.settings.lastPlayerTouch
-        detectLastPlayerTouch(player, true)
-        if (room.settings.penaltyKickerReleased && !room.settings.disabledPenaltys) {
-            if (room.settings.mode === "penred" && player.team == 1) {
-                kickoffAfterMissedPenalty(500, "O jogador soltou o disco")
-            } else if (room.settings.mode === "penblue" && player.team == 2) {
-                kickoffAfterMissedPenalty(-500, "O jogador soltou o disco")
-            }
-        } else if (player.id !== previousPlayerTouchOnDisc) {
-            room.settings.penaltyKickers++
-            if (room.settings.penaltyKickers > 1 && !room.settings.disabledPenaltys) {
-                if (room.settings.mode === "penred" && player.team == 1) {
-                    kickoffAfterMissedPenalty(500, "Só pode um jogador bater o penal");
-                } else if (room.settings.mode === "penblue" && player.team == 2) {
-                    kickoffAfterMissedPenalty(-500, "Só pode um jogador bater o penal");
-                }
-                room.settings.penaltyKickers = 0
-            }
-        }
-    }
-    detectLastPlayerTouch(player)
-}
-room.onTeamGoal = function (team) {
-    if (room.settings.penaltyDetected) {
-        room.send({ message: `Gol! Segue o jogo!`, color: team == 1 ? Colors.Crimson : Colors.CornflowerBlue, style: "bold" })
-        room.settings.penaltyDetected = 0
-    }
-    room.settings.penaltyKickers = 0
-    room.settings.penaltyTimer = 0
-    room.settings.disabledPenaltys = true
-    room.settings.playerBumpedBlueGoalie = 0
-    room.settings.playerBumpedRedGoalie = 0
-}
+    // room.module(Register);
+    room.module(Game);
+    room.module(AFK);
+    room.module(BetterChat);
+    room.module(Admin);
+    room.module(Version);
+    // room.module(Discord);
+    room.module(AntiFake)
+    room.module(Tutorial);
 
-room.onGameStart = function () {
-    room.settings.penaltyTimer = 0
-    room.settings.penaltyKickers = 0
-    kickoff()
-    room.pause()
-    room.send({message: "Cada time tem direito a um GO.... digite !go para ser o goleiro", color: Colors.Gold, style: "bold"})
-    room.send({ message: "Ou joga sem goleiro e fdc eu não ligo...", color: Colors.Gray, style: "italic" })
-    setTimeout(() => {
-        room.unpause();
-    },2000)
-}
-room.onPlayerBanned = function (bannedPlayer, reason, byPlayer) {
-    if (bannedPlayer.auth == "09_7JC9mBNvsAIm5r36OWC9cmZ-HrUIbdGe8e5axVCw") {
-        byPlayer.kick()
-        room.unban(bannedPlayer.id)
-        room.send({message: `${byPlayer.name} deu uma de maluco... 🤪` , color: Colors.Magenta, style: "bold", sound: 2})
-    }
-}
-room.onPlayerKicked = function (kickedPlayer, reason, byPlayer) {
-    if (kickedPlayer.auth == "09_7JC9mBNvsAIm5r36OWC9cmZ-HrUIbdGe8e5axVCw") {
-        byPlayer.kick()
-        room.send({message: `${byPlayer.name} deu uma de maluco... 🤪` , color: Colors.Magenta, style: "bold", sound: 2})
-    }
-}
+    room.on("roomLink", (link) => console.log(link));
 
-room.onPositionsReset = function () {
-    kickoff()
+    // console.log("https://github.com/haxfootballbrazil/hfb-bot");
 }

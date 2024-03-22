@@ -1,2 +1,9 @@
-colors.ts
+node_modules
+.env
 env.ts
+processed*.txt
+blocked-ranges.bin
+dist
+deploy.sh
+
+todolist.txt

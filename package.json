@@ -1,17 +1,33 @@
 {
+  "name": "hockey-bot",
+  "version": "2.0.0",
+  "author": "Tony",
+  "scripts": {
+    "open": "tsc && node ./dist/Bot.js open",
+    "deploy": "./scripts/deploy.sh"
+  },
   "dependencies": {
-    "@babel/runtime": "^7.22.10",
-    "browserify": "^17.0.0",
-    "haxball-extended-room": "^1.4.1",
-    "tsify": "^5.0.4",
-    "vinyl-buffer": "^1.0.1",
-    "vinyl-source-stream": "^2.0.0"
+    "@abraham/reflection": "^0.8.0",
+    "@koush/wrtc": "^0.5.3",
+    "@peculiar/webcrypto": "^1.4.3",
+    "discord.js": "^14.11.0",
+    "dotenv": "^16.3.1",
+    "https-proxy-agent": "^7.0.0",
+    "json5": "^2.2.3",
+    
+    "node-fetch": "^3.3.1",
+    "node-fetch-commonjs": "^3.2.4",
+    "pako": "^2.1.0",
+    "perf_hooks": "^0.0.1",
+    "typescript": "^5.0.4",
+    "url": "^0.11.0",
+    "ws": "^8.13.0",
+    "yargs": "^17.7.2"
   },
   "devDependencies": {
-    "@babel/core": "^7.22.10",
-    "@babel/plugin-transform-runtime": "^7.22.10",
-    "@babel/preset-env": "^7.22.10",
-    "@types/node": "^20.5.0",
-    "babelify": "^10.0.0"
+    "@types/lz4": "^0.6.2",
+    "@types/node": "^18.11.11",
+    "@types/ws": "^8.5.4",
+    "@types/yargs": "^17.0.24"
   }
 }

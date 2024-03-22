@@ -1,12 +1,15 @@
 {
     "compilerOptions": {
-        "module": "commonjs",
+        "module": "CommonJS",
         "esModuleInterop": true,
         "noImplicitAny": true,
         "removeComments": true,
+        "suppressImplicitAnyIndexErrors": true,
         "target": "esnext",
         "experimentalDecorators": true,
         "resolveJsonModule": true,
-        "forceConsistentCasingInFileNames": false
-    }
+        "ignoreDeprecations": "5.0",
+        "allowJs": true,
+        "outDir": "dist",
+    },
 }

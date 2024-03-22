@@ -3,7 +3,6 @@
 ![Haxball Hockey Bot](hockeythumbnial.png)
 
 - Bot designed to automatically enforce [hockey map rules](#rules) in the online game [Haxball](https://www.haxball.com/).
-- It utilizes the [haxball-extended-room](https://github.com/gabrielbrop/haxball-extended-room) repository.
 
 ## Rules
 

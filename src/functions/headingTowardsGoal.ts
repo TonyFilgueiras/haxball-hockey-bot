@@ -1,5 +1,3 @@
-import { Room } from "haxball-extended-room";
-
 export default function headingTowardsGoal(
     xInitial: number,
     yInitial: number,
