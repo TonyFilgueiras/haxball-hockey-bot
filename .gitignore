@@ -5,5 +5,5 @@ processed*.txt
 blocked-ranges.bin
 dist
 deploy.sh
-
+package-lock.json
 todolist.txt

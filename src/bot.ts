@@ -43,10 +43,10 @@ yargs(hideBin(process.argv))
 
 function run(HBInit: any, token: string, isClosed?: boolean, testMode?: boolean, geo?: string[]) {
     const room = new Room(HBInit, {
-        roomName: `🏑 Ice Hockey x4 beta`,
+        roomName: `🏑 Ice Hockey x4`,
         maxPlayers: 16,
         public: true,
-        geo: geo ? { code: geo[0], lat: parseFloat(geo[1]), lon: parseFloat(geo[2]) } : undefined,
+        geo: geo ? { code: geo[0], lat: parseFloat(geo[1]), lon: parseFloat(geo[2]) } : {code: 'br', lat: - 22.908333, lon: -43.196388},
         token
     });
 
