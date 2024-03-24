@@ -8,6 +8,7 @@ import { Team, TeamColors, MessageObject } from './Global';
 import Module from './Module';
 import Player from "./Player";
 import PlayerList from "./PlayerList";
+import {CustomTeam} from "../modules/CustomTeams"
 
 export enum EventNames {
     onPlayerJoin = "playerJoin",
@@ -59,6 +60,7 @@ declare interface Room {
     on(event: `${EventNames.onBeforeEstablishConnection}`, listener: (ip: string) => boolean): this;
     on(event: "newPlayerTouchBall", listener: (player: Player, before?: Player) => void): this;
     on(event: "gameStartTicking", listener: (player: Player, before?: Player) => void): this;
+    on(event: "uniformChanged", listener: (redColor: CustomTeam, blueColor: CustomTeam) => void): this;
 
     on(event: string, listener: Function): this;
 }

@@ -3,17 +3,17 @@ import { hideBin } from 'yargs/helpers'
 
 import startHaxball from "./haxball/Haxball.js";
 
-import Room from "./core/Room";
-import { AFK } from "./modules/administration/AFK";
-import Game from "./modules/Game";
+import Room from "./core/Room.js";
+import { AFK } from "./modules/administration/AFK.js";
+import Game from "./modules/Game.js";
 
-import { BetterChat } from "./modules/administration/BetterChat";
-import { Admin } from "./modules/administration/Admin";
-import Version from "./modules/administration/Version";
-import Discord from "./modules/administration/Discord";
-import AntiFake from "./modules/administration/AntiFake";
-import Log from "./modules/administration/Log";
-import Tutorial from "./modules/administration/Tutorial";
+import { BetterChat } from "./modules/administration/BetterChat.js";
+import { Admin } from "./modules/administration/Admin.js";
+import Version from "./modules/administration/Version.js";
+import Discord from "./modules/administration/Discord.js";
+import AntiFake from "./modules/administration/AntiFake.js";
+import Log from "./modules/administration/Log.js";
+import Tutorial from "./modules/administration/Tutorial.js";
 
 yargs(hideBin(process.argv))
     .command('open <token>', 'Open the room', {
@@ -45,7 +45,7 @@ function run(HBInit: any, token: string, isClosed?: boolean, testMode?: boolean,
     const room = new Room(HBInit, {
         roomName: `🏑 Ice Hockey x4`,
         maxPlayers: 16,
-        public: true,
+        public: false,
         geo: geo ? { code: geo[0], lat: parseFloat(geo[1]), lon: parseFloat(geo[2]) } : {code: 'br', lat: - 22.908333, lon: -43.196388},
         token
     });

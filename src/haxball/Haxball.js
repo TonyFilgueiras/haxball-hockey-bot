@@ -4084,7 +4084,7 @@ function startHaxball(proxy) {
         },
         W: function (a) {
           this.Ea = a.Xa();
-          if (["🏈", "❌", "🚧", "💪", "🤡", "😵"].includes(this.Ea)) this.Ea = null;
+          if (["🧤", "🥊"].includes(this.Ea)) this.Ea = null;
           null != this.Ea && (this.Ea = H.pb(this.Ea, 2));
           //if (api["onPlayerChangeAvatar"]) api["onPlayerChangeAvatar"](this.Ea, );
         },

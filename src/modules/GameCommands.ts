@@ -3,11 +3,11 @@ import { Team } from "../core/Global";
 import * as Global from "../Global";
 import type Room from "../core/Room";
 import Command, { CommandInfo } from "../core/Command";
-import StadiumUtils from "../utils/StadiumUtils";
 import Game from "./Game";
 import Utils from "../utils/Utils";
 import Timer from "../utils/Timer";
 import { adminPassword } from "../env";
+import capitalizeFirstLetter from "../functions/capitalizeFirstLetter";
 
 class GameCommands extends Module {
   private pauseTimer: Timer;
@@ -38,20 +38,20 @@ class GameCommands extends Module {
     if ($.caller.getTeam() == 1) {
       var redHasGoalie = this.game.checkForGoalieSetting(room.getPlayers().red(), 1);
       if (redHasGoalie) {
-        $.caller.reply({ message: "Ja tem goleiro no Red", color: Global.Color.HotPink });
+        $.caller.reply({ message: "Ja tem goleiro no Red", color: this.game.redBallColor });
       } else if (room.isGameInProgress()) {
         this.game.setGoalie(room, $.caller);
       } else {
-        $.caller.reply({ message: `Espera o jogo começar`, color: Global.Color.HotPink });
+        $.caller.reply({ message: `Espera o jogo começar`, color: this.game.redBallColor });
       }
     } else if ($.caller.getTeam() == 2) {
       var blueHasGoalie = this.game.checkForGoalieSetting(room.getPlayers().blue(), 2);
       if (blueHasGoalie) {
-        $.caller.reply({ message: "Ja tem goleiro no Blue", color: Global.Color.DodgerBlue });
+        $.caller.reply({ message: "Ja tem goleiro no Blue", color: this.game.blueBallColor });
       } else if (room.isGameInProgress()) {
         this.game.setGoalie(room, $.caller);
       } else {
-        $.caller.reply({ message: `Espera o jogo começar`, color: Global.Color.DodgerBlue });
+        $.caller.reply({ message: `Espera o jogo começar`, color: this.game.blueBallColor });
       }
     } else {
       $.caller.reply({ message: "Tu ta no spec doidão", color: Global.Color.DarkGoldenRod });
@@ -67,19 +67,20 @@ class GameCommands extends Module {
         $.caller.settings.goalie = 0;
         $.caller.clearAvatar();
         room.send({
-          message: $.caller.getTeam() === 1 ? `${$.caller.name} não é o Goalie do Red` : `${$.caller.name} não é o Goalie do Blue`,
-          color: $.caller.getTeam() === 1 ? Global.Color.Crimson : Global.Color.CornflowerBlue,
+          message: $.caller.getTeam() === 1 ? `${$.caller.name} não é o Goalie dos ${capitalizeFirstLetter(this.game.redTeamName)}` : `${$.caller.name} não é o Goalie dos ${capitalizeFirstLetter(this.game.blueTeamName)}`,
+          color: $.caller.getTeam() === 1 ? this.game.redBallColor : this.game.blueBallColor,
+          style: "bold"
         });
       } else {
         $.caller.reply({
           message: "Tu nem era o goleiro",
-          color: $.caller.getTeam() == 1 ? Global.Color.HotPink : $.caller.getTeam() == 2 ? Global.Color.DodgerBlue : Global.Color.GoldenRod,
+          color: $.caller.getTeam() == 1 ? this.game.redBallColor : $.caller.getTeam() == 2 ? this.game.blueBallColor : Global.Color.GoldenRod,
         });
       }
     } else if (room.isGameInProgress()) {
       $.caller.reply({
         message: "Só pode remover a posição de goleiro com o jogo pausado",
-        color: $.caller.getTeam() == 1 ? Global.Color.HotPink : $.caller.getTeam() == 2 ? Global.Color.DodgerBlue : Global.Color.GoldenRod,
+        color: $.caller.getTeam() == 1 ? this.game.redBallColor : $.caller.getTeam() == 2 ? this.game.blueBallColor : Global.Color.GoldenRod,
       });
     }
   }
@@ -94,7 +95,7 @@ class GameCommands extends Module {
       return false;
     }
 
-    $.caller.reply({ message: `🎲 Red ${this.game.scoreRed} • ${this.game.scoreBlue} Blue`, color: Global.Color.Pink, style: "bold" });
+    $.caller.reply({ message: `🎲 ${capitalizeFirstLetter(this.game.redTeamName)} ${this.game.scoreRed} • ${this.game.scoreBlue} ${capitalizeFirstLetter(this.game.blueTeamName)}`, color: Global.Color.Pink, style: "bold" });
 
     return false;
   }
@@ -130,7 +131,7 @@ class GameCommands extends Module {
   })
   penredCommand($: CommandInfo, room: Room) {
     if ($.caller.isAdmin() && room.isGameInProgress()) {
-      room.send({ message: `${$.caller.name} Marcou o penal para o Red`, color: Global.Color.Crimson, style: "bold", sound: 2 });
+      room.send({ message: `${$.caller.name} Marcou o penal para os ${capitalizeFirstLetter(this.game.redTeamName)}`, color: this.game.redBallColor, style: "bold", sound: 2 });
       this.game.setPenalty(room, "red");
     }
   }
@@ -139,7 +140,7 @@ class GameCommands extends Module {
   })
   penblueCommand($: CommandInfo, room: Room) {
     if ($.caller.isAdmin() && room.isGameInProgress()) {
-      room.send({ message: `${$.caller.name} Marcou o penal para o Blue`, color: Global.Color.CornflowerBlue, style: "bold", sound: 2 });
+      room.send({ message: `${$.caller.name} Marcou o penal para os ${capitalizeFirstLetter(this.game.blueTeamName)}`, color: this.game.blueBallColor, style: "bold", sound: 2 });
       this.game.setPenalty(room, "blue");
     }
   }
@@ -177,21 +178,21 @@ class GameCommands extends Module {
     aliases: ["regras", "comojogar", "rule"],
   })
   rulesCommand($: CommandInfo, room: Room) {
-    $.caller.reply({ message: "Cada time tem direito a um(a) Goalie.", color: Global.Color.MistyRose });
-    $.caller.reply({ message: "Goalie - Só pode pegar o disco dentro de sua própria área:", color: Global.Color.MistyRose });
-    $.caller.reply({ message: "         - na zona de ataque (à frente do meio-campo),", color: Global.Color.MistyRose });
-    $.caller.reply({ message: "         - na zona atrás de seu próprio gol,", color: Global.Color.MistyRose });
-    $.caller.reply({ message: "         - ou após o toque de um(a) companheiro(a) de time.", color: Global.Color.MistyRose });
-    $.caller.reply({ message: "Jogador(a) de linha - Não pode pegar o disco dentro da área defensiva,", color: Global.Color.MistyRose });
+    $.caller.reply({ message: "Cada time tem direito a um(a) Goalie.", color: Global.Color.Yellow });
+    $.caller.reply({ message: "Goalie - Só pode pegar o disco dentro de sua própria área:", color: Global.Color.Yellow });
+    $.caller.reply({ message: "         - na zona de ataque (à frente do meio-campo),", color: Global.Color.Yellow });
+    $.caller.reply({ message: "         - na zona atrás de seu próprio gol,", color: Global.Color.Yellow });
+    $.caller.reply({ message: "         - ou após o toque de um(a) companheiro(a) de time.", color: Global.Color.Yellow });
+    $.caller.reply({ message: "Jogador(a) de linha - Não pode pegar o disco dentro da área defensiva,", color: Global.Color.Yellow });
     $.caller.reply({
       message: "Não pode interferir com o(a) goleiro(a) adversário(a) caso esteja dentro de sua própria área.",
-      color: Global.Color.MistyRose,
+      color: Global.Color.Yellow,
     });
-    $.caller.reply({ message: "Qualquer infração causada resultará em um 'penal' para o adversário.", color: Global.Color.MistyRose });
-    $.caller.reply({ message: "Obs.: 1 pixel do(a) jogador(a) dentro da área é considerado dentro.", color: Global.Color.MistyRose });
+    $.caller.reply({ message: "Qualquer infração causada resultará em um 'penal' para o adversário.", color: Global.Color.Yellow });
+    $.caller.reply({ message: "Obs.: 1 pixel do(a) jogador(a) dentro da área é considerado dentro.", color: Global.Color.Yellow });
     $.caller.reply({
       message: "         1 pixel do(a) Goalie à frente do meio-campo ou atrás do gol também é o suficiente para não ser penalizado(a).",
-      color: Global.Color.MistyRose,
+      color: Global.Color.Yellow,
     });
   }
   @Command({

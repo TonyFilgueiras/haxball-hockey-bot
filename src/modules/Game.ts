@@ -18,6 +18,9 @@ import distanceBetweenDots from "../functions/math/distanceBetweenDots";
 import calculateTotalSpeed from "../functions/math/calculateTotalSpeed";
 import headingTowardsGoal from "../functions/headingTowardsGoal";
 import Penalty, { PenaltyTeams } from "./modes/Penalty";
+import playerInterferedGoalie from "../functions/playerInterferedGoalie";
+import CustomTeams from "./CustomTeams";
+import capitalizeFirstLetter from "../functions/capitalizeFirstLetter";
 
 export enum GameModes {
   Game = 1,
@@ -27,6 +30,7 @@ export enum GameModes {
 
 class Game extends Module {
   public gameCommands: GameCommands;
+  public customTeams: CustomTeams;
   public customAvatarManager: CustomAvatarManager;
   public penalty: Penalty;
 
@@ -52,6 +56,15 @@ class Game extends Module {
 
   public tickCount = 0;
 
+  public redBallColor: number;
+  public blueBallColor: number;
+  public redTeamName: string;
+  public blueTeamName: string;
+
+  public redPlayerBumpedGoalieY: number;
+  public bluePlayerBumpedGoalieY: number;
+  public redGoalieGotBumpedY: number;
+  public blueGoalieGotBumpedY: number;
   public playerBumpedRedGoalie = 0;
   public playerBumpedBlueGoalie = 0;
   public goalieBumpTimeout: NodeJS.Timeout = null;
@@ -70,9 +83,8 @@ class Game extends Module {
     room.setScoreLimit(this.scoreLimit);
     room.setTimeLimit(this.timeLimit);
     room.setStadium(this.stadium);
-    room.setTeamColors(1, { angle: 60, textColor: toColor("FFFFFF"), colors: [toColor("FF0505"), toColor("770000"), toColor("330000")] });
-    room.setTeamColors(2, { angle: 60, textColor: toColor("FFFFFF"), colors: [toColor("0080FF"), toColor("004077"), toColor("002033")] });
 
+    this.customTeams = room.module(CustomTeams, this) as CustomTeams;
     this.gameCommands = room.module(GameCommands, this) as GameCommands;
     this.penalty = room.module(Penalty, this) as Penalty;
     this.customAvatarManager = new CustomAvatarManager(room);
@@ -151,8 +163,15 @@ class Game extends Module {
       //     })
       //   );
       // }
+      
+      if (this.scoreRed !== this.scoreBlue) {
+        const teamWon = this.scoreBlue > this.scoreRed ? Team.Blue : Team.Red;
+
+        this.customTeams.setTeamToMaintainUniform(teamWon);
+      }
 
       this.teamPlayersHistory = [];
+
 
       this.gameTime = null;
       this.scoreBlue = 0;
@@ -163,6 +182,13 @@ class Game extends Module {
       this.overtime = false;
       this.gameStopped = false;
       this.lastPlayMessageSent = false;
+    });
+
+    room.on("uniformChanged", (redColor, blueColor) => {
+      this.redBallColor = redColor.ballColor;
+      this.blueBallColor = blueColor.ballColor;
+      this.redTeamName = redColor.name;
+      this.blueTeamName = blueColor.name;
     });
 
     room.on("gameStart", (byPlayer: Player) => {
@@ -196,56 +222,21 @@ class Game extends Module {
 
       this.gameTime = room.getScores().time;
 
-      for (const redPlayer of room.getPlayers().red()) {
-        this.goalieIllegalTouch(room, redPlayer);
-        this.illegalTouchInGoalieBox(room, redPlayer, "red");
-        this.touchedDisc(room, redPlayer);
-        this.goalieBump(room, redPlayer, "blue");
-      }
-
-      for (const bluePlayer of room.getPlayers().blue()) {
-        this.goalieIllegalTouch(room, bluePlayer);
-        this.illegalTouchInGoalieBox(room, bluePlayer, "blue");
-        this.touchedDisc(room, bluePlayer);
-        this.goalieBump(room, bluePlayer, "red");
-      }
+      this.penalty.checkingForPenaltiesOnTick(room);
     });
 
     room.on("playerBallKick", (player) => {
-      if (player.getTeam() == 1) {
-        if (!player.settings.goalie && !player.settings.penaltyGoalie) {
-          if (this.insideGoalieBox(player.getX(), player.getY(), "red") && !this.penalty.disabledPenalties) {
-            this.detectPenalty(room, player, "O animal pegou a bola dentro da área sem ser goleiro!", 1);
-          }
-        } else if (player.settings.goalie || player.settings.penaltyGoalie) {
-          if (this.goalieOutsideBox(player)) {
-            const previousTeamTouchOnDisc = this.lastTeamTouch;
-            if (previousTeamTouchOnDisc === 2 && !this.penalty.disabledPenalties) {
-              this.detectPenalty(room, player, "O animal tocou no disco fora da area de goleiro apos o toque do adversário", 1);
-            }
-          }
-        }
-      } else if (player.getTeam() == 2) {
-        if (!player.settings.goalie && !player.settings.penaltyGoalie) {
-          if (this.insideGoalieBox(player.getX(), player.getY(), "blue") && !this.penalty.disabledPenalties) {
-            this.detectPenalty(room, player, "O animal pegou a bola dentro da área sem ser goleiro!", 2);
-          }
-        } else if (player.settings.goalie || player.settings.penaltyGoalie) {
-          if (this.goalieOutsideBox(player)) {
-            const previousTeamTouchOnDisc = this.lastTeamTouch;
-            if (previousTeamTouchOnDisc === 1 && !this.penalty.disabledPenalties) {
-              this.detectPenalty(room, player, "O animal tocou no disco fora da area de goleiro apos o toque do adversário", 2);
-            }
-          }
-        }
-      }
-      this.detectLastPlayerTouch(room, player);
+      this.penalty.checkingForPenaltiesOnKick(room, player);
+    });
+
+    room.on("teamGoal", (team) => {
+      team == 1 ? this.scoreRed++: this.scoreBlue++
     });
   }
 
   kickoff(room: Room) {
     this.mode = GameModes.Game;
-    this.penalty.teamTakingPenalty = PenaltyTeams.NoPenalty
+    this.penalty.teamTakingPenalty = PenaltyTeams.NoPenalty;
 
     room.pause();
     setTimeout(() => {
@@ -332,7 +323,7 @@ class Game extends Module {
   kickoffAfterMissedPenalty(room: Room, xAxis: 500 | -500, reasonMissedPenalty?: string, afterPenalty: boolean = true) {
     try {
       this.mode = GameModes.Game;
-      this.penalty.teamTakingPenalty = PenaltyTeams.NoPenalty
+      this.penalty.teamTakingPenalty = PenaltyTeams.NoPenalty;
 
       let redPlayerSorted = 0;
       let bluePlayerSorted = 0;
@@ -352,10 +343,15 @@ class Game extends Module {
       room.pause();
 
       if (afterPenalty) {
-        room.send({ message: "Penalty perdido!", color: xAxis > 0 ? Global.Color.Crimson : Global.Color.CornflowerBlue, sound: 2, style: "bold" });
+        room.send({
+          message: "Penalty perdido!",
+          color: xAxis > 0 ? this.customTeams.getTeams().red.ballColor : this.customTeams.getTeams().blue.ballColor,
+          sound: 2,
+          style: "bold",
+        });
         room.send({
           message: `${reasonMissedPenalty}`,
-          color: xAxis > 0 ? Global.Color.Crimson : Global.Color.CornflowerBlue,
+          color: xAxis > 0 ? this.customTeams.getTeams().red.ballColor : this.customTeams.getTeams().blue.ballColor,
           sound: 2,
           style: "bold",
         });
@@ -491,19 +487,33 @@ class Game extends Module {
     if (!this.penalty.penaltyDetected && !this.penalty.disabledPenalties) {
       room.send({
         message: `Penalty do ${player.name}!`,
-        color: team == 1 ? Global.Color.Crimson : Global.Color.CornflowerBlue,
+        color: team == 1 ? this.customTeams.getTeams().red.ballColor : this.customTeams.getTeams().blue.ballColor,
         style: "bold",
         sound: 2,
       });
-      room.send({ message: `${penalty}`, color: team == 1 ? Global.Color.Crimson : Global.Color.CornflowerBlue, style: "bold" });
+      room.send({
+        message: `${penalty}`,
+        color: team == 1 ? this.customTeams.getTeams().red.ballColor : this.customTeams.getTeams().blue.ballColor,
+        style: "bold",
+      });
     }
     this.penalty.penaltyDetected = team;
     if (this.penalty.teamTakingPenalty === PenaltyTeams.PenaltyBlue && this.penalty.penaltyDetected === 1) {
-      room.send({ message: `Gol automático!!`, color: team == 2 ? Global.Color.Crimson : Global.Color.CornflowerBlue, style: "bold", sound: 2 });
+      room.send({
+        message: `Gol automático!!`,
+        color: team == 2 ? this.customTeams.getTeams().red.ballColor : this.customTeams.getTeams().blue.ballColor,
+        style: "bold",
+        sound: 2,
+      });
       this.setDiscPosition(puck, -755, 0, -1, 0);
     }
     if (this.penalty.teamTakingPenalty === PenaltyTeams.PenaltyRed && this.penalty.penaltyDetected === 2) {
-      room.send({ message: `Gol automático!`, color: team == 1 ? Global.Color.Crimson : Global.Color.CornflowerBlue, style: "bold", sound: 2 });
+      room.send({
+        message: `Gol automático!`,
+        color: team == 1 ? this.customTeams.getTeams().red.ballColor : this.customTeams.getTeams().blue.ballColor,
+        style: "bold",
+        sound: 2,
+      });
       this.setDiscPosition(puck, 755, 0, 1, 0);
     }
 
@@ -527,8 +537,11 @@ class Game extends Module {
   setPenalty(room: Room, forTeam: "red" | "blue") {
     try {
       const puck = room.getBall();
+
+      setTimeout(() => {}, 100);
       puck.setColor(0);
 
+      this.penalty.penaltyKickerReleased = false;
       this.penalty.penaltyKickers = 0;
       this.penalty.penaltyTimer = 0;
       this.penalty.disabledPenalties = false;
@@ -739,18 +752,24 @@ class Game extends Module {
     player.setAvatar("🧤");
     player.reply({
       message: "Para remover a posição de goalie digite !li",
-      color: player.getTeam() === 1 ? Global.Color.HotPink : Global.Color.DodgerBlue,
+      color: Global.Color.LimeGreen,
+      style: "bold",
     });
-    player.reply({ message: "Voce só pode tocar na bola na:", color: player.getTeam() === 1 ? Global.Color.HotPink : Global.Color.DodgerBlue });
-    player.reply({ message: "-       Zona ofensiva", color: player.getTeam() === 1 ? Global.Color.HotPink : Global.Color.DodgerBlue });
-    player.reply({ message: "-       Zona atras do gol", color: player.getTeam() === 1 ? Global.Color.HotPink : Global.Color.DodgerBlue });
+    player.reply({ message: "Voce só pode tocar na bola na:", color: Global.Color.LimeGreen, style: "bold" });
+    player.reply({ message: "-       Zona ofensiva", color: Global.Color.LimeGreen, style: "bold" });
+    player.reply({ message: "-       Zona atras do gol", color: Global.Color.LimeGreen, style: "bold" });
     player.reply({
       message: "-       Ou quando um companheiro de equipe tocar por ultimo",
-      color: player.getTeam() === 1 ? Global.Color.HotPink : Global.Color.DodgerBlue,
+      color: Global.Color.LimeGreen,
+      style: "bold",
     });
     room.send({
-      message: player.getTeam() === 1 ? `${player.name} é o Goalie do Red` : `${player.name} é o Goalie do Blue`,
-      color: player.getTeam() === 1 ? Global.Color.Crimson : Global.Color.CornflowerBlue,
+      message:
+        player.getTeam() === 1
+          ? `${player.name} é o Goalie dos ${capitalizeFirstLetter(this.customTeams.getTeams().red.name)}`
+          : `${player.name} é o Goalie dos ${capitalizeFirstLetter(this.customTeams.getTeams().blue.name)}`,
+      color: player.getTeam() === 1 ? this.customTeams.getTeams().red.ballColor : this.customTeams.getTeams().blue.ballColor,
+      style: "bold",
     });
     if (room.getScores().time < 2) {
       this.setDiscPosition(player, discPosition, 0);
@@ -819,7 +838,9 @@ class Game extends Module {
       this.penalty.penaltyTakerId = player.id;
       this.penalty.penaltyTakerTeam = player.getTeam();
     }
-    player.getTeam() === 1 ? room.getBall().setColor(5570560) : room.getBall().setColor(85);
+    player.getTeam() === 1
+      ? room.getBall().setColor(this.customTeams.teamBallColor().red)
+      : room.getBall().setColor(this.customTeams.teamBallColor().blue);
   }
   goalieBump(room: Room, player: Player, goalieTeam: "red" | "blue") {
     const puck = room.getBall();
@@ -836,21 +857,33 @@ class Game extends Module {
             player.id !== this.lastPlayerTouch &&
             redGoalie?.id !== this.lastPlayerTouch;
 
-          const isHeadingTowardsGoal = headingTowardsGoal(puck.getX(), puck.getY(), puck.getVelocityX(), puck.getVelocityY(), 1);
+          const { isHeadingTowardsGoal, yAtIntersection } = headingTowardsGoal(puck.getX(), puck.getY(), puck.getVelocityX(), puck.getVelocityY(), 1);
 
           if (goalieBumped) {
             this.playerBumpedRedGoalie = player.id;
+            this.bluePlayerBumpedGoalieY = player.getY();
+            this.redGoalieGotBumpedY = redGoalie.getY();
+
             if (this.goalieBumpTimeout) {
               clearTimeout(this.goalieBumpTimeout); // Clear the existing timeout
             }
 
             this.goalieBumpTimeout = setTimeout(() => {
               this.playerBumpedRedGoalie = 0;
-              this.goalieBumpTimeout = null; // Reset the timer reference
+              this.bluePlayerBumpedGoalieY = null;
+              this.redGoalieGotBumpedY = null;
+              this.goalieBumpTimeout = null;
             }, 500);
           }
 
-          if (isHeadingTowardsGoal && player.id === this.playerBumpedRedGoalie) {
+          const playerInterfered = playerInterferedGoalie(
+            this.bluePlayerBumpedGoalieY,
+            this.redGoalieGotBumpedY,
+            room.getBall().getY(),
+            yAtIntersection
+          );
+
+          if (isHeadingTowardsGoal && playerInterfered && player.id === this.playerBumpedRedGoalie) {
             if (!this.penalty.disabledPenalties) {
               clearTimeout(this.goalieBumpTimeout); // Clear the existing timeout
               this.playerBumpedRedGoalie = 0;
@@ -860,12 +893,12 @@ class Game extends Module {
               this.setPenalty(room, "red");
               room.send({
                 message: `Penalty by ${player.name}!`,
-                color: Global.Color.CornflowerBlue,
+                color: this.customTeams.getTeams().red.ballColor,
                 style: "bold",
               });
               room.send({
                 message: `O animal bateu no Goleiro adversário`,
-                color: Global.Color.CornflowerBlue,
+                color: this.customTeams.getTeams().red.ballColor,
                 style: "bold",
               });
             }
@@ -883,21 +916,32 @@ class Game extends Module {
             player.id !== this.lastPlayerTouch &&
             blueGoalie?.id !== this.lastPlayerTouch;
 
-          const isHeadingTowardsGoal = headingTowardsGoal(puck.getX(), puck.getY(), puck.getVelocityX(), puck.getVelocityY(), 2);
+          const { isHeadingTowardsGoal, yAtIntersection } = headingTowardsGoal(puck.getX(), puck.getY(), puck.getVelocityX(), puck.getVelocityY(), 2);
 
           if (goalieBumped) {
             this.playerBumpedBlueGoalie = player.id;
+            this.redPlayerBumpedGoalieY = player.getY();
+            this.blueGoalieGotBumpedY = blueGoalie.getY();
             if (this.goalieBumpTimeout) {
               clearTimeout(this.goalieBumpTimeout); // Clear the existing timeout
             }
 
             this.goalieBumpTimeout = setTimeout(() => {
               this.playerBumpedBlueGoalie = 0;
+              this.redPlayerBumpedGoalieY = null;
+              this.blueGoalieGotBumpedY = null;
               this.goalieBumpTimeout = null; // Reset the timer reference
             }, 500);
           }
 
-          if (isHeadingTowardsGoal && player.id === this.playerBumpedBlueGoalie) {
+          const playerInterfered = playerInterferedGoalie(
+            this.redPlayerBumpedGoalieY,
+            this.blueGoalieGotBumpedY,
+            room.getBall().getY(),
+            yAtIntersection
+          );
+
+          if (isHeadingTowardsGoal && playerInterfered && player.id === this.playerBumpedBlueGoalie) {
             if (!this.penalty.disabledPenalties) {
               clearTimeout(this.goalieBumpTimeout); // Clear the existing timeout
               this.playerBumpedBlueGoalie = 0;
@@ -907,12 +951,12 @@ class Game extends Module {
               this.setPenalty(room, "blue");
               room.send({
                 message: `Penalty by ${player.name}!`,
-                color: Global.Color.Crimson,
+                color: this.customTeams.getTeams().blue.ballColor,
                 style: "bold",
               });
               room.send({
                 message: `O animal bateu no Goleiro adversário`,
-                color: Global.Color.Crimson,
+                color: this.customTeams.getTeams().blue.ballColor,
                 style: "bold",
               });
             }

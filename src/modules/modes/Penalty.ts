@@ -11,9 +11,9 @@ export enum PenaltyTeams {
 }
 
 export default class Penalty extends Mode {
-  name = "penalty"
+  name = "penalty";
   mode = GameModes.Penalty;
-  
+
   public teamTakingPenalty: PenaltyTeams;
 
   public disabledPenalties = false;
@@ -42,6 +42,9 @@ export default class Penalty extends Mode {
 
     room.on("gameTick", () => {
       if (this.game.mode !== this.mode) return;
+
+      this.checkingForPenaltiesOnTick(room);
+
       this.penaltyTimer++;
       if (this.teamTakingPenalty === PenaltyTeams.PenaltyRed) {
         this.checkForMissedPenalty(room, "penred");
@@ -63,6 +66,8 @@ export default class Penalty extends Mode {
 
     room.on("playerBallKick", (player: Player) => {
       if (this.game.mode !== this.mode) return;
+
+      this.checkingForPenaltiesOnKick(room, player);
 
       if (this.mode !== GameModes.Game) {
         const previousPlayerTouchOnDisc = this.game.lastPlayerTouch;
@@ -88,16 +93,59 @@ export default class Penalty extends Mode {
     });
   }
 
+  checkingForPenaltiesOnTick(room: Room) {
+    for (const redPlayer of room.getPlayers().red()) {
+      this.game.goalieIllegalTouch(room, redPlayer);
+      this.game.illegalTouchInGoalieBox(room, redPlayer, "red");
+      this.game.touchedDisc(room, redPlayer);
+      this.game.goalieBump(room, redPlayer, "blue");
+    }
+
+    for (const bluePlayer of room.getPlayers().blue()) {
+      this.game.goalieIllegalTouch(room, bluePlayer);
+      this.game.illegalTouchInGoalieBox(room, bluePlayer, "blue");
+      this.game.touchedDisc(room, bluePlayer);
+      this.game.goalieBump(room, bluePlayer, "red");
+    }
+  }
+
+  checkingForPenaltiesOnKick(room: Room, player: Player) {
+    if (player.getTeam() == 1) {
+      if (!player.settings.goalie && !player.settings.penaltyGoalie) {
+        if (this.game.insideGoalieBox(player.getX(), player.getY(), "red") && !this.disabledPenalties) {
+          this.game.detectPenalty(room, player, "O animal pegou a bola dentro da área sem ser goleiro!", 1);
+        }
+      } else if (player.settings.goalie || player.settings.penaltyGoalie) {
+        if (this.game.goalieOutsideBox(player)) {
+          const previousTeamTouchOnDisc = this.game.lastTeamTouch;
+          if (previousTeamTouchOnDisc === 2 && !this.disabledPenalties) {
+            this.game.detectPenalty(room, player, "O animal tocou no disco fora da area de goleiro apos o toque do adversário", 1);
+          }
+        }
+      }
+    } else if (player.getTeam() == 2) {
+      if (!player.settings.goalie && !player.settings.penaltyGoalie) {
+        if (this.game.insideGoalieBox(player.getX(), player.getY(), "blue") && !this.disabledPenalties) {
+          this.game.detectPenalty(room, player, "O animal pegou a bola dentro da área sem ser goleiro!", 2);
+        }
+      } else if (player.settings.goalie || player.settings.penaltyGoalie) {
+        if (this.game.goalieOutsideBox(player)) {
+          const previousTeamTouchOnDisc = this.game.lastTeamTouch;
+          if (previousTeamTouchOnDisc === 1 && !this.disabledPenalties) {
+            this.game.detectPenalty(room, player, "O animal tocou no disco fora da area de goleiro apos o toque do adversário", 2);
+          }
+        }
+      }
+    }
+    this.game.detectLastPlayerTouch(room, player);
+  }
+
   checkForMissedPenalty(room: Room, mode: "penred" | "penblue") {
     const puck = room.getBall();
     const redTeam = room.getPlayers().red();
     const blueTeam = room.getPlayers().blue();
 
     const penaltyMissedEnabled = !this.penaltyDetected && !this.disabledPenalties && this.penaltyTimer > 100;
-
-    setTimeout(() => {
-      this.penaltyKickerReleased = false;
-    }, 100);
 
     const missedGoal =
       mode == "penred"
