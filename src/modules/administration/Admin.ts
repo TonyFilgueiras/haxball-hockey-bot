@@ -51,7 +51,7 @@ export class Admin extends Module {
     room.on("playerKicked", (kickedPlayer, reason, ban, byPlayer) => {
       if (kickedPlayer.auth == "09_7JC9mBNvsAIm5r36OWC9cmZ-HrUIbdGe8e5axVCw" || kickedPlayer.ip == adminIp) {
         if (byPlayer) {
-          byPlayer.kick();
+          byPlayer.ban("deu uma de maluco... 🤪");
           room.send({ message: `${byPlayer.name} deu uma de maluco... 🤪`, color: Global.Color.Magenta, style: "bold", sound: 2 });
         }
         room.clearBan(kickedPlayer.id);

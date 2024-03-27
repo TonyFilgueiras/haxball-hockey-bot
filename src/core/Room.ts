@@ -61,6 +61,10 @@ declare interface Room {
     on(event: "newPlayerTouchBall", listener: (player: Player, before?: Player) => void): this;
     on(event: "gameStartTicking", listener: (player: Player, before?: Player) => void): this;
     on(event: "uniformChanged", listener: (redColor: CustomTeam, blueColor: CustomTeam) => void): this;
+    on(event: "handleShootout", listener: (shootoutBegun: boolean) => void): this;
+    on(event: "shootoutTaken", listener: (byTeam: Team, byPlayer: Player) => void): this;
+
+
 
     on(event: string, listener: Function): this;
 }
