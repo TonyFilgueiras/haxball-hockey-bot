@@ -38,20 +38,20 @@ class GameCommands extends Module {
     if ($.caller.getTeam() == 1) {
       var redHasGoalie = this.game.checkForGoalieSetting(room.getPlayers().red(), 1);
       if (redHasGoalie) {
-        $.caller.reply({ message: "Ja tem goleiro no Red", color: this.game.redBallColor });
+        $.caller.reply({ message: "Ja tem goleiro no Red", color: this.game.redTextColor });
       } else if (room.isGameInProgress()) {
         this.game.setGoalie(room, $.caller);
       } else {
-        $.caller.reply({ message: `Espera o jogo começar`, color: this.game.redBallColor });
+        $.caller.reply({ message: `Espera o jogo começar`, color: this.game.redTextColor });
       }
     } else if ($.caller.getTeam() == 2) {
       var blueHasGoalie = this.game.checkForGoalieSetting(room.getPlayers().blue(), 2);
       if (blueHasGoalie) {
-        $.caller.reply({ message: "Ja tem goleiro no Blue", color: this.game.blueBallColor });
+        $.caller.reply({ message: "Ja tem goleiro no Blue", color: this.game.blueTextColor });
       } else if (room.isGameInProgress()) {
         this.game.setGoalie(room, $.caller);
       } else {
-        $.caller.reply({ message: `Espera o jogo começar`, color: this.game.blueBallColor });
+        $.caller.reply({ message: `Espera o jogo começar`, color: this.game.blueTextColor });
       }
     } else {
       $.caller.reply({ message: "Tu ta no spec doidão", color: Global.Color.DarkGoldenRod });
@@ -68,19 +68,19 @@ class GameCommands extends Module {
         $.caller.clearAvatar();
         room.send({
           message: $.caller.getTeam() === 1 ? `${$.caller.name} não é o Goalie dos ${capitalizeFirstLetter(this.game.redTeamName)}` : `${$.caller.name} não é o Goalie dos ${capitalizeFirstLetter(this.game.blueTeamName)}`,
-          color: $.caller.getTeam() === 1 ? this.game.redBallColor : this.game.blueBallColor,
+          color: $.caller.getTeam() === 1 ? this.game.redTextColor : this.game.blueTextColor,
           style: "bold"
         });
       } else {
         $.caller.reply({
           message: "Tu nem era o goleiro",
-          color: $.caller.getTeam() == 1 ? this.game.redBallColor : $.caller.getTeam() == 2 ? this.game.blueBallColor : Global.Color.GoldenRod,
+          color: $.caller.getTeam() == 1 ? this.game.redTextColor : $.caller.getTeam() == 2 ? this.game.blueTextColor : Global.Color.GoldenRod,
         });
       }
     } else if (room.isGameInProgress()) {
       $.caller.reply({
         message: "Só pode remover a posição de goleiro com o jogo pausado",
-        color: $.caller.getTeam() == 1 ? this.game.redBallColor : $.caller.getTeam() == 2 ? this.game.blueBallColor : Global.Color.GoldenRod,
+        color: $.caller.getTeam() == 1 ? this.game.redTextColor : $.caller.getTeam() == 2 ? this.game.blueTextColor : Global.Color.GoldenRod,
       });
     }
   }
@@ -131,7 +131,7 @@ class GameCommands extends Module {
   })
   penredCommand($: CommandInfo, room: Room) {
     if ($.caller.isAdmin() && room.isGameInProgress()) {
-      room.send({ message: `${$.caller.name} Marcou o penal para os ${capitalizeFirstLetter(this.game.redTeamName)}`, color: this.game.redBallColor, style: "bold", sound: 2 });
+      room.send({ message: `${$.caller.name} Marcou o penal para os ${capitalizeFirstLetter(this.game.redTeamName)}`, color: this.game.redTextColor, style: "bold", sound: 2 });
       this.game.setPenalty(room, "red");
     }
   }
@@ -140,7 +140,7 @@ class GameCommands extends Module {
   })
   penblueCommand($: CommandInfo, room: Room) {
     if ($.caller.isAdmin() && room.isGameInProgress()) {
-      room.send({ message: `${$.caller.name} Marcou o penal para os ${capitalizeFirstLetter(this.game.blueTeamName)}`, color: this.game.blueBallColor, style: "bold", sound: 2 });
+      room.send({ message: `${$.caller.name} Marcou o penal para os ${capitalizeFirstLetter(this.game.blueTeamName)}`, color: this.game.blueTextColor, style: "bold", sound: 2 });
       this.game.setPenalty(room, "blue");
     }
   }
@@ -150,7 +150,7 @@ class GameCommands extends Module {
   })
   helpCommand($: CommandInfo, room: Room) {
     $.caller.reply({
-      message: "Comandos disponiveis: !go, !li, !penred, !penblue, !help, !resetball, !rules, !clearbans",
+      message: "Comandos disponiveis: !go, !li, !penred, !penblue, !help, !resetball, !rules, !clearbans, !shootout, !setteam <red|blue> <nomeDoTime> ",
       color: Global.Color.DarkGoldenRod,
     });
   }

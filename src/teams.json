@@ -2,61 +2,73 @@
   "vermelhinhos": {
     "category": "RED",
     "color": "/colors red 60 FFFFFF FF0505 770000 330000",
-    "ballColor": "770000"
+    "ballColor": "770000",
+    "textColor": "dc143c"
   },
   "azulzinhos": {
     "category": "BLUE",
     "color": "/colors red 60 FFFFFF 0080FF 004077 002033",
-    "ballColor": "000077"
+    "ballColor": "000077",
+    "textColor": "1e90ff"
   },
   "verdinhos": {
     "category": "GREEN",
     "color": "/colors red 60 FFFFFF 008000 006400 004000",
-    "ballColor": "007700"
+    "ballColor": "007700",
+    "textColor": "228b22"
   },
   "amarelinhos": {
     "category": "YELLOW",
     "color": "/colors red 60 FFFFFF FFFF00 BFBF00 8F8F00",
-    "ballColor": "777700"
+    "ballColor": "777700",
+    "textColor": "ffd700"
   },
   "laranjinhas": {
     "category": "RED",
     "color": "/colors red 60 FFFFFF FFA500 FF8C00 FF4500",
-    "ballColor": "c96b00"
+    "ballColor": "c96b00",
+    "textColor": "c96b00"
   },
   "lilazinhos": {
     "category": "PINK",
     "color": "/colors red 60 000000 E6E6FA D8BFD8 BA55D3",
-    "ballColor": "BA55D3"
+    "ballColor": "BA55D3",
+    "textColor": "BA55D3"
   },
   "rosinhas": {
     "category": "PINK",
     "color": "/colors red 60 FFFFFF FFC0CB FF69B4 FF1493",
-    "ballColor": "FF69B4"
+    "ballColor": "FF69B4",
+    "textColor": "FF69B4"
   },
   "roxinhos": {
     "category": "PINK",
     "color": "/colors red 60 FFFFFF D100C3 870087 520052",
-    "ballColor": "520052"
+    "ballColor": "520052",
+    "textColor": "663399"
   },
   "branquinhos": {
     "category": "WHITE",
     "color": "/colors red 60 000000 FFFFFF eeeeee dddddd",
-    "ballColor": "eeeeee"
+    "ballColor": "eeeeee",
+    "textColor": "eeeeee"
   },
   "pretinhos": {
     "category": "BLACK",
     "color": "/colors red 60 ffffff 333333 222222 111111",
-    "ballColor": "111111"
+    "ballColor": "111111",
+    "textColor": "fffaf0"
   },
   "limaozinhos": {
     "category": "GREEN",
     "color": "/colors red 60 FFFFFF 66FF66 66CD66 00B50C",
-    "ballColor": "66CD66"
+    "ballColor": "66CD66",
+    "textColor": "66CD66"
   },
   "cyaninhos": {
     "category": "BLUE",
     "color": "/colors red 60 FFFFFF 00FFFF 20B2AA 008B8B",
-    "ballColor": "00FFFF"
+    "ballColor": "00FFFF",
+    "textColor": "00FFFF"
   }
 }

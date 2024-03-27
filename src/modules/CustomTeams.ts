@@ -16,6 +16,7 @@ export type CustomTeam = {
   textColor: number;
   colors: number[];
   ballColor: number;
+  chatTextColor: number
 };
 
 class CustomTeams extends Module {
@@ -38,6 +39,7 @@ class CustomTeams extends Module {
         textColor: toColor(uniformColor[1]),
         colors: [uniformColor[2], uniformColor[3], uniformColor[4]].map((c) => toColor(c)),
         ballColor: toColor(uniform.ballColor),
+        chatTextColor: toColor(uniform.textColor),
       };
     });
 
