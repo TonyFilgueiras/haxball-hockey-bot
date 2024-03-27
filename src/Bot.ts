@@ -13,7 +13,7 @@ import Version from "./modules/administration/Version.js";
 import Discord from "./modules/administration/Discord.js";
 import AntiFake from "./modules/administration/AntiFake.js";
 import Log from "./modules/administration/Log.js";
-import Tutorial from "./modules/administration/Tutorial.js";
+import RoomQueue from './modules/administration/RoomQueue.js';
 
 yargs(hideBin(process.argv))
     .command('open <token>', 'Open the room', {
@@ -43,7 +43,7 @@ yargs(hideBin(process.argv))
 
 function run(HBInit: any, token: string, isClosed?: boolean, testMode?: boolean, geo?: string[]) {
     const room = new Room(HBInit, {
-        roomName: `🏑 Ice Hockey x4`,
+        roomName: `🏑 Ice Hockey x4 🏑`,
         maxPlayers: 16,
         public: true,
         geo: geo ? { code: geo[0], lat: parseFloat(geo[1]), lon: parseFloat(geo[2]) } : {code: 'br', lat: - 22.908333, lon: -43.196388},
@@ -68,9 +68,8 @@ function run(HBInit: any, token: string, isClosed?: boolean, testMode?: boolean,
     room.module(Version);
     // room.module(Discord);
     room.module(AntiFake)
-    room.module(Tutorial);
+    room.module(RoomQueue)
 
     room.on("roomLink", (link) => console.log(link));
-
-    // console.log("https://github.com/haxfootballbrazil/hfb-bot");
+    console.log(testMode)
 }

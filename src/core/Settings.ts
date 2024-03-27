@@ -5,6 +5,8 @@ export default class Settings {
   almostAfk: boolean
   afk: boolean;
   lastActivity = 0
+
+  leftMidGame: boolean
   enteredMidGame: boolean
 
   scoredShootout : boolean[] = []; 

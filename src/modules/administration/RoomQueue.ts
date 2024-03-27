@@ -32,17 +32,39 @@ export default class RoomQueue extends Module {
         this.scoreRedShootout = 0;
         this.scoreBlueShootout = 0;
       } else {
-        setTimeout(() => {
-          this.shootoutMode = shootoutBegun;
-        }, 2000);
+        this.shootoutMode = shootoutBegun;
       }
     });
 
     room.on("gameStart", () => {
-      this.redPlayers.map((player) => (player.settings.enteredMidGame = false));
-      this.bluePlayers.map((player) => (player.settings.enteredMidGame = false));
-      this.specPlayers.map((player) => (player.settings.enteredMidGame = false));
+      this.redPlayers.map((player) => {
+        player.settings.enteredMidGame = false;
+        player.settings.leftMidGame = false;
+      });
+      this.bluePlayers.map((player) => {
+        player.settings.enteredMidGame = false;
+        player.settings.leftMidGame = false;
+      });
+      this.specPlayers.map((player) => {
+        player.settings.enteredMidGame = false;
+        player.settings.leftMidGame = false;
+      });
     });
+
+    room.on("unafk",(player)=> {
+      if (room.isGameInProgress()) player.settings.lastActivity = room.getScores().time;
+
+      if (!this.shootoutMode) {
+        if (this.redPlayers.length < this.teamMaximumSize && this.redPlayers.length <= this.bluePlayers.length) {
+          this.movePlayer(room, player, 1, 0);
+        } else if (this.bluePlayers.length < this.teamMaximumSize) {
+          this.movePlayer(room, player, 2, 0);
+        } else {
+          this.specPlayers.push(player);
+        }
+        if (!room.isGameInProgress()) room.start();
+      }
+    })
 
     room.on("gameStop", () => {
       let teamLost = 0;
@@ -76,6 +98,9 @@ export default class RoomQueue extends Module {
     });
 
     room.on("playerJoin", (player) => {
+      this.roomIsEmpty = false;
+      if (room.isGameInProgress()) player.settings.lastActivity = room.getScores().time;
+
       if (!this.shootoutMode) {
         if (this.redPlayers.length < this.teamMaximumSize && this.redPlayers.length <= this.bluePlayers.length) {
           this.movePlayer(room, player, 1, 0);
@@ -91,33 +116,37 @@ export default class RoomQueue extends Module {
     });
 
     room.on("playerLeave", (player) => {
-      this.updateQueueAndTeams(player, player.getTeam());
-      if (this.shootoutMode) return;
+      try {
+        this.updateQueueAndTeams(player, player.getTeam());
+        if (this.shootoutMode) return;
 
-      if (this.specPlayers.length > 0) {
-        if (this.redPlayers.length < this.teamMaximumSize) {
-          this.movePlayer(room, this.specPlayers[0], 1, this.specPlayers[0].getTeam());
-        }
-        if (this.bluePlayers.length < this.teamMaximumSize) {
-          this.movePlayer(room, this.specPlayers[0], 2, this.specPlayers[0].getTeam());
-        }
-      } else {
-        if (this.redPlayers.length > this.bluePlayers.length + 1) {
-          const filteredRedTeam = this.redPlayers.filter((p) => p !== player);
-          if (filteredRedTeam.length > 0) {
-            this.movePlayer(room, filteredRedTeam[filteredRedTeam.length - 1], 2, filteredRedTeam[filteredRedTeam.length - 1].getTeam());
+        if (this.specPlayers.length > 0) {
+          if (this.redPlayers.length < this.teamMaximumSize) {
+            this.movePlayer(room, this.specPlayers[0], 1, this.specPlayers[0].getTeam());
+          }
+          if (this.bluePlayers.length < this.teamMaximumSize) {
+            this.movePlayer(room, this.specPlayers[0], 2, this.specPlayers[0].getTeam());
+          }
+        } else {
+          if (this.redPlayers.length > this.bluePlayers.length + 1) {
+            const filteredRedTeam = this.redPlayers.filter((p) => p !== player);
+            if (filteredRedTeam.length > 0) {
+              this.movePlayer(room, filteredRedTeam[filteredRedTeam.length - 1], 2, filteredRedTeam[filteredRedTeam.length - 1].getTeam());
+            }
+          }
+          if (this.bluePlayers.length > this.redPlayers.length + 1) {
+            const filteredBlueTeam = this.bluePlayers.filter((p) => p !== player);
+            if (filteredBlueTeam.length > 0) {
+              this.movePlayer(room, filteredBlueTeam[filteredBlueTeam.length - 1], 1, filteredBlueTeam[filteredBlueTeam.length - 1].getTeam());
+            }
           }
         }
-        if (this.bluePlayers.length > this.redPlayers.length + 1) {
-          const filteredBlueTeam = this.bluePlayers.filter((p) => p !== player);
-          if (filteredBlueTeam.length > 0) {
-            this.movePlayer(room, filteredBlueTeam[filteredBlueTeam.length - 1], 1, filteredBlueTeam[filteredBlueTeam.length - 1].getTeam());
-          }
+        if (room.getPlayers().size == 0) {
+          this.roomIsEmpty = true;
+          room.stop();
         }
-      }
-      if (room.getPlayers().size == 0) {
-        this.roomIsEmpty = true;
-        room.stop();
+      } catch (e) {
+        console.log(e);
       }
     });
 
@@ -134,6 +163,7 @@ export default class RoomQueue extends Module {
     });
 
     room.on("playerTeamChanged", (changedPlayer, byPlayer) => {
+      changedPlayer.settings.almostAfk = false;
       if (byPlayer) {
         this.redPlayers = this.redPlayers.filter((player) => {
           player.id !== changedPlayer.id;
@@ -149,24 +179,24 @@ export default class RoomQueue extends Module {
     });
 
     room.on("playerActivity", (player) => {
-      if (player.getTeam() !== 0 && room.isGameInProgress() && room.getScores().time && !room.isGamePaused()) {
-        try {
+      try {
+        if (player.getTeam() !== 0 && room.getScores() && !room.isGamePaused()) {
           this.updatePlayerLastActivity(room, player);
-        } catch (e) {
-          console.log(e);
-        }
-      } else if (player.getTeam() == 0 && player.settings.afk == true) {
-        this.updatePlayerLastActivity(room, player);
-        if (this.shootoutMode) return;
+        } else if (player.getTeam() == 0 && player.settings.afk == true) {
+          this.updatePlayerLastActivity(room, player);
+          if (this.shootoutMode) return;
 
-        if (this.redPlayers.length < this.teamMaximumSize && this.redPlayers.length <= this.bluePlayers.length) {
-          this.movePlayer(room, player, 1, 0);
-        } else if (this.bluePlayers.length < this.teamMaximumSize) {
-          this.movePlayer(room, player, 2, 0);
+          if (this.redPlayers.length < this.teamMaximumSize && this.redPlayers.length <= this.bluePlayers.length) {
+            this.movePlayer(room, player, 1, 0);
+          } else if (this.bluePlayers.length < this.teamMaximumSize) {
+            this.movePlayer(room, player, 2, 0);
+          }
+          player.settings.almostAfk = false;
+          player.settings.afk = false;
+          if (!room.isGameInProgress()) room.start();
         }
-        player.settings.almostAfk = false;
-        player.settings.afk = false;
-        if (!room.isGameInProgress()) room.start();
+      } catch (e) {
+        console.log(e);
       }
     });
   }
@@ -225,7 +255,7 @@ export default class RoomQueue extends Module {
       room.setTeam(player.id, toTeam);
       this.updateQueueAndTeams(player, fromTeam, toTeam);
       if (room.isGameInProgress()) {
-        if (room.getScores().time > 20 || room.getScores().red !== room.getScores().blue) {
+        if ((room.getScores().time > 20 || room.getScores().red !== room.getScores().blue) && !player.settings.leftMidGame) {
           room.send({ message: `${player.name} entrou no meio de jogo`, color: Global.Color.YellowGreen, style: "bold" });
           player.settings.enteredMidGame = true;
         }
@@ -239,6 +269,7 @@ export default class RoomQueue extends Module {
     if (!player.settings.afk && player.getTeam() !== 0) {
       room.send({ message: `${player.name} está AFK 😴😴`, color: Global.Color.SlateGray, style: "bold" });
       player.settings.almostAfk = false;
+      player.settings.leftMidGame = true;
       player.settings.afk = true;
       this.movePlayer(room, player, 0, player.getTeam());
     }
@@ -256,7 +287,13 @@ export default class RoomQueue extends Module {
   }
 
   updatePlayerLastActivity(room: Room, player: Player) {
-    player.settings.lastActivity = room.getScores().time;
+    try {
+      if (room.isGameInProgress()) {
+        player.settings.lastActivity = room.getScores().time;
+      }
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   updateQueueAndTeams(playerMoved: Player, fromTeamMoved: Team, toTeamMoved?: Team) {

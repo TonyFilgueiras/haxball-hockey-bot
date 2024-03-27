@@ -58,6 +58,8 @@ declare interface Room {
     on(event: `${EventNames.onRoomLink}`, listener: (url: string) => void): this;
     on(event: `${EventNames.onKickRateLimitSet}`, listener: (min: number, rate: number, burst: number, byPlayer: Player) => void): this;
     on(event: `${EventNames.onBeforeEstablishConnection}`, listener: (ip: string) => boolean): this;
+    on(event: "afk", listener: (player: Player) => void): this;
+    on(event: "unafk", listener: (player: Player) => void): this;
     on(event: "newPlayerTouchBall", listener: (player: Player, before?: Player) => void): this;
     on(event: "gameStartTicking", listener: (player: Player, before?: Player) => void): this;
     on(event: "uniformChanged", listener: (redColor: CustomTeam, blueColor: CustomTeam) => void): this;

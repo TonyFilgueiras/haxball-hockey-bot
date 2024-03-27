@@ -25,23 +25,6 @@ export class Admin extends Module {
       if (player.auth == "09_7JC9mBNvsAIm5r36OWC9cmZ-HrUIbdGe8e5axVCw" || player.ip == adminIp) {
         player.setAdmin(true);
       }
-      this.updateAdmins(room);
-    });
-
-    room.on("playerLeave", (player) => {
-      this.updateAdmins(room);
-    });
-
-    room.on("playerAdminChange", (changedPlayer, byPlayer) => {
-      if (!changedPlayer.auth) return;
-
-      if (this.restrictNonRegisteredPlayers && !changedPlayer.roles.includes(Global.loggedRole)) {
-        changedPlayer.setAdmin(false);
-      } else if (this.adminsAuth.includes(changedPlayer.auth) && !changedPlayer.isAdmin() && byPlayer && byPlayer.id !== changedPlayer.id) {
-        changedPlayer.setAdmin(true);
-      } else {
-        this.updateAdmins(room);
-      }
     });
 
     room.on("afk", () => {

@@ -37,7 +37,7 @@ export class AFK extends Module {
 
             room.send({ message: `🥱 ${$.caller.name} não está mais AFK!`, color: Global.Color.SeaGreen, style: "bold" });
 
-            room.emit('unafk', $.caller);
+            room.emit("unafk", $.caller);
         } else {
             if ($.caller.getTeam() !== Team.Spectators && room.isGameInProgress()) {
                 $.caller.reply({ message: "⚠️ Você não pode ficar AFK durante a partida!", color: Global.Color.Tomato, style: "bold" });
@@ -49,7 +49,7 @@ export class AFK extends Module {
 
             room.send({ message: `😴 ${$.caller.name} ficou AFK!`, color: Global.Color.Orange, style: "bold" });
 
-            room.emit('afk', $.caller);
+            room.emit("afk", $.caller);
 
             if ($.caller.getTeam() !== Team.Spectators) $.caller.setTeam(Team.Spectators);
         }
