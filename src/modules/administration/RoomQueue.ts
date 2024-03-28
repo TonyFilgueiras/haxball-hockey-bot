@@ -52,6 +52,7 @@ export default class RoomQueue extends Module {
     });
 
     room.on("afk", (player) => {
+      console.log("aqui")
       this.setAFK(room, player);
       try {
         if (this.shootoutMode) return;
@@ -316,12 +317,13 @@ export default class RoomQueue extends Module {
 
   setAFK(room: Room, player: Player) {
     if (!player.settings.afk && player.getTeam() !== 0) {
-      room.send({ message: `${player.name} está AFK 😴😴`, color: Global.Color.SlateGray, style: "bold" });
+      room.send({ message: `${player.name} está AFK 😴😴`, color: Global.Color.Orange, style: "bold" });
       player.settings.almostAfk = false;
       player.settings.leftMidGame = true;
       player.settings.afk = true;
 
       try {
+        console.log("sout")
         room.setTeam(player.id, 0);
         this.updateQueueAndTeams(player, player.getTeam(), 0);
       } catch (e) {
@@ -368,17 +370,25 @@ export default class RoomQueue extends Module {
 
     switch (toTeamMoved) {
       case 0:
-        this.specPlayers.push(playerMoved);
+        // Check if the playerMoved is not already in specPlayers before pushing
+        if (!this.specPlayers.some(player => player.id === playerMoved.id)) {
+          this.specPlayers.push(playerMoved);
+        }
         break;
       case 1:
-        this.redPlayers.push(playerMoved);
+        if (!this.redPlayers.some(player => player.id === playerMoved.id)) {
+          this.redPlayers.push(playerMoved);
+        }
         break;
       case 2:
-        this.bluePlayers.push(playerMoved);
+        if (!this.bluePlayers.some(player => player.id === playerMoved.id)) {
+          this.bluePlayers.push(playerMoved);
+        }
         break;
       default:
         break;
     }
+    
 
     console.log("-======-=-=-=-=-=-=----------=============-----------===========----------======-----=-=-=");
     this.specPlayers.forEach((player) => {

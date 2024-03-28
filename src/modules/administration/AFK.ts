@@ -33,11 +33,10 @@ export class AFK extends Module {
 
             room.emit("unafk", $.caller);
         } else {           
-            $.caller.settings.afk = true;
-
-            room.send({ message: `😴 ${$.caller.name} ficou AFK!`, color: Global.Color.Orange, style: "bold" });
 
             room.emit("afk", $.caller);
+            console.log("ali")
+            // $.caller.setTeam(0)
         }
 
         return false;
