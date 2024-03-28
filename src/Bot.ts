@@ -62,13 +62,13 @@ function run(HBInit: any, token: string, isClosed?: boolean, testMode?: boolean,
 
     // room.module(Register);
     room.module(Game);
-    room.module(AFK);
+    // room.module(AFK);
     room.module(BetterChat);
     room.module(Admin);
     room.module(Version);
     // room.module(Discord);
     room.module(AntiFake)
-    room.module(RoomQueue)
+    // room.module(RoomQueue)
 
     room.on("roomLink", (link) => console.log(link));
     console.log(testMode)

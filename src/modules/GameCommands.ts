@@ -150,7 +150,7 @@ class GameCommands extends Module {
   })
   helpCommand($: CommandInfo, room: Room) {
     $.caller.reply({
-      message: "Comandos disponiveis: !go, !li, !penred, !penblue, !help, !resetball, !rules, !clearbans, !shootout, !setteam <red|blue> <nomeDoTime> ",
+      message: "Comandos disponiveis: !go, !li, !penred, !penblue, !help, !resetball, !rules, !clearbans, !shootout, !endshootout,!setteam <red|blue> <nomeDoTime> ",
       color: Global.Color.DarkGoldenRod,
     });
   }

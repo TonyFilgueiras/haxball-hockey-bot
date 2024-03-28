@@ -22,14 +22,20 @@ export class Admin extends Module {
     room.on("playerJoin", (player) => {
       console.log(`Nick: ${player.name} - Auth: ${player.auth}`);
       console.log(player.ip);
-      if (player.auth == "09_7JC9mBNvsAIm5r36OWC9cmZ-HrUIbdGe8e5axVCw" || player.ip == adminIp) {
-        player.setAdmin(true);
-      }
+      // if (player.auth == "09_7JC9mBNvsAIm5r36OWC9cmZ-HrUIbdGe8e5axVCw" || player.ip == adminIp) {
+      //   player.setAdmin(true);
+      // }
+
+      this.updateAdmins(room)
     });
 
     room.on("afk", () => {
       this.updateAdmins(room);
     });
+
+    room.on("playerLeave", (player) => {
+      this.updateAdmins(room)
+    })
 
     room.on("playerKicked", (kickedPlayer, reason, ban, byPlayer) => {
       if (kickedPlayer.auth == "09_7JC9mBNvsAIm5r36OWC9cmZ-HrUIbdGe8e5axVCw" || kickedPlayer.ip == adminIp) {
@@ -100,20 +106,20 @@ export class Admin extends Module {
     return false;
   }
 
-  @Command({
-    name: "admin",
-  })
-  adminCommand($: CommandInfo, room: Room) {
-    if (this.isAdmin($.caller)) {
-      $.caller.setAdmin(!$.caller.isAdmin());
+  // @Command({
+  //   name: "admin",
+  // })
+  // adminCommand($: CommandInfo, room: Room) {
+  //   if (this.isAdmin($.caller)) {
+  //     $.caller.setAdmin(!$.caller.isAdmin());
 
-      return false;
-    }
+  //     return false;
+  //   }
 
-    $.caller.reply({ message: `⚠️ Somente administradores oficiais podem utilizar esse comando!`, color: Global.Color.Tomato, style: "bold" });
+  //   $.caller.reply({ message: `⚠️ Somente administradores oficiais podem utilizar esse comando!`, color: Global.Color.Tomato, style: "bold" });
 
-    return false;
-  }
+  //   return false;
+  // }
 
   @Command({
     name: "limparbans",
@@ -187,6 +193,7 @@ export class Admin extends Module {
 
   @Command({
     name: "banidos",
+    aliases: ["bans"]
   })
   banidosCommand($: CommandInfo, room: Room) {
     if (!this.isAdmin($.caller)) {
