@@ -366,21 +366,6 @@ class Game extends Module {
       this.playerBumpedBlueGoalie = 0;
       this.playerBumpedRedGoalie = 0;
       this.lastTeamTouch = 0;
-      if (this.mode == GameModes.Shootout) {
-        this.penaltyTaker.settings.scoredShootout.push(false);
-        room.emit("shootoutTaken", this.penaltyTaker.getTeam(), this.penaltyTaker);
-        return;
-      }
-      this.mode = GameModes.Game;
-      this.penalty.teamTakingPenalty = PenaltyTeams.NoPenalty;
-
-      let redPlayerSorted = 0;
-      let bluePlayerSorted = 0;
-
-      this.penaltyTaker = null;
-
-      this.handleTime.alertClockTime(room, true, this.handleTime.inOvertime);
-      room.pause();
 
       if (afterPenalty) {
         room.send({
@@ -396,6 +381,27 @@ class Game extends Module {
           style: "bold",
         });
       }
+      if (this.mode == GameModes.Shootout) {
+        if (this.penaltyTaker) {
+          this.penaltyTaker.settings.scoredShootout.push(false);
+          room.emit("shootoutTaken", this.penaltyTaker.getTeam(), this.penaltyTaker);
+        } else {
+          console.log("dfasd")
+          const teamToEmit = xAxis == 500 ? 1 : 2
+          room.emit("shootoutTaken", teamToEmit);
+        }
+        return;
+      }
+      this.mode = GameModes.Game;
+      this.penalty.teamTakingPenalty = PenaltyTeams.NoPenalty;
+
+      let redPlayerSorted = 0;
+      let bluePlayerSorted = 0;
+
+      this.penaltyTaker = null;
+
+      this.handleTime.alertClockTime(room, true, this.handleTime.inOvertime);
+      room.pause();
 
       setTimeout(() => {
         room.unpause();
@@ -587,7 +593,9 @@ class Game extends Module {
       }
       if (this.mode !== GameModes.Shootout) this.handleTime.alertClockTime(room, true, this.handleTime.inOvertime);
 
-      setTimeout(() => {}, 100);
+      setTimeout(() => {
+        this.lastPlayerTouch = 0;
+      }, 100);
       puck.setColor(0);
 
       this.penalty.penaltyKickerReleased = false;
@@ -595,7 +603,6 @@ class Game extends Module {
       this.penalty.penaltyTimer = 0;
       this.penalty.disabledPenalties = false;
 
-      this.lastPlayerTouch = 0;
       this.lastTeamTouch = forTeam == "red" ? 1 : 2;
 
       this.mode = isItShootout ? GameModes.Shootout : GameModes.Penalty;

@@ -26,32 +26,18 @@ export class AFK extends Module {
         name: "afk"
     })
     afkCommand($: CommandInfo, room: Room) {
-        if (room.isGameInProgress() && $.caller.getTeam() !== Team.Spectators && !room.isGamePaused() && room.getPlayers().teams().length > 2) {
-            $.caller.reply({ message: "⚠️ Você não pode ficar AFK com o jogo despausado!", color: Global.Color.Tomato, style: "bold" });
-            
-            return false;
-        }
-
         if ($.caller.settings.afk) {
             $.caller.settings.afk = false;
 
             room.send({ message: `🥱 ${$.caller.name} não está mais AFK!`, color: Global.Color.SeaGreen, style: "bold" });
 
             room.emit("unafk", $.caller);
-        } else {
-            if ($.caller.getTeam() !== Team.Spectators && room.isGameInProgress()) {
-                $.caller.reply({ message: "⚠️ Você não pode ficar AFK durante a partida!", color: Global.Color.Tomato, style: "bold" });
-                
-                return false;
-            }
-            
+        } else {           
             $.caller.settings.afk = true;
 
             room.send({ message: `😴 ${$.caller.name} ficou AFK!`, color: Global.Color.Orange, style: "bold" });
 
             room.emit("afk", $.caller);
-
-            if ($.caller.getTeam() !== Team.Spectators) $.caller.setTeam(Team.Spectators);
         }
 
         return false;

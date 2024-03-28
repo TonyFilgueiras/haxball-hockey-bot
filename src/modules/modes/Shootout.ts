@@ -17,6 +17,8 @@ export default class Shootout extends Mode {
   public shootoutScoreRed = 0;
   public shootoutScoreBlue = 0;
 
+  private playerLeftMidPenalty: Player;
+
   public shotsPerTeam = 0;
   public shotsTaken = 0;
 
@@ -26,12 +28,14 @@ export default class Shootout extends Mode {
     room.on("shootoutTaken", (byTeam, byPlayer) => {
       this.movePenaltyTakerToBack(byPlayer, byTeam);
 
+      const playerThatTookPenalty = byPlayer ? byPlayer : this.playerLeftMidPenalty;
+
       if (++this.shotsTaken >= this.shotsPerTeam * 2) {
         if (this.shootoutScoreRed !== this.shootoutScoreBlue) {
           this.endShootout(room);
         } else {
-          this.shootoutOvertime(room, byPlayer);
-          return
+          this.shootoutOvertime(room, playerThatTookPenalty);
+          return;
         }
       } else {
         const nextTeam = byTeam === 1 ? 2 : 1;
@@ -39,7 +43,7 @@ export default class Shootout extends Mode {
         const nextTeamColor = nextTeam === 1 ? "red" : "blue";
         this.game.setPenalty(room, nextTeamColor, true);
 
-        this.updateShootoutTakers(room, byPlayer);
+        this.updateShootoutTakers(room, playerThatTookPenalty);
       }
     });
 
@@ -51,37 +55,51 @@ export default class Shootout extends Mode {
     });
 
     room.on("gameTick", () => {
-      if (this.game.mode !== this.mode) return
+      if (this.game.mode !== this.mode) return;
       if (room.getScores().time >= 60 * 5) {
-        room.send({message: "Ninguem demora 5 minutos pra decidir em penalidades", color: Global.Color.LimeGreen, sound: 2, style: "bold"})
-        room.stop()
+        room.send({ message: "Ninguem demora 5 minutos pra decidir em penalidades", color: Global.Color.LimeGreen, sound: 2, style: "bold" });
+        room.stop();
         try {
-          room.getPlayers().red().forEach((player) => {
-            player.setTeam(0)
-          })
-          room.getPlayers().blue().forEach((player) => {
-            player.setTeam(0)
-          })
+          room
+            .getPlayers()
+            .red()
+            .forEach((player) => {
+              player.setTeam(0);
+            });
+          room
+            .getPlayers()
+            .blue()
+            .forEach((player) => {
+              player.setTeam(0);
+            });
         } catch (e) {
           console.log(e);
         }
       }
-    })
+    });
 
     room.on("playerLeave", (player) => {
       if (this.game.mode !== this.mode) return;
-      this.shootoutPlayers = this.shootoutPlayers.filter(p => p.id !== player.id);
-  });
+      this.shootoutPlayers = this.shootoutPlayers.filter((p) => p.id !== player.id);
+      if (this.game.penaltyTaker == player) {
+        this.playerLeftMidPenalty = player;
+      }
+    });
+    
+    room.on("playerTeamChanged", (changedPlayer, byPlayer) => {
+      if (this.game.mode !== this.mode) return;
+      
+      console.log(changedPlayer.getTeam());
+    });
   }
 
-  shootoutOvertime(room: Room, player:Player) {
+  shootoutOvertime(room: Room, player: Player) {
     room.send({ message: "!!! Mata Mata !!!", color: Global.Color.LightSalmon, style: "bold" });
 
     this.shotsTaken = -1;
     this.shotsPerTeam = 1;
 
-    room.emit("shootoutTaken", 2, player  )
-  
+    room.emit("shootoutTaken", 2, player);
   }
 
   endShootout(room: Room) {
@@ -176,13 +194,19 @@ export default class Shootout extends Mode {
   }
 
   updateShootoutTakers(room: Room, player: Player) {
-    const playerIndex = this.shootoutPlayers.findIndex((p) => p.id === player.id);
+    if (player) {
+      const playerIndex = this.shootoutPlayers.findIndex((p) => p.id === player.id);
 
-    if (this.shootoutPlayers[playerIndex].name == player.name) {
-      this.shootoutPlayers[playerIndex].settings = player.settings;
+      if (this.playerLeftMidPenalty) {
+        this.playerLeftMidPenalty = null;
+      } else {
+        if (this.shootoutPlayers[playerIndex].name == player.name) {
+          this.shootoutPlayers[playerIndex].settings = player.settings;
+        }
+      }
+
+      this.updateShotsTaken(room);
     }
-
-    this.updateShotsTaken(room);
   }
 
   updateShotsTaken(room: Room) {
@@ -223,6 +247,21 @@ export default class Shootout extends Mode {
         sound: 2,
       });
       this.setShootout(room);
+    }
+  }
+  @Command({
+    name: "endshootout",
+    aliases: ["endshootou", "pararpenalidades"],
+  })
+  endShootoutCommand($: CommandInfo, room: Room) {
+    if ($.caller.isAdmin()) {
+      room.send({
+        message: `Shotoout encerrado pelo ${$.caller.name} `,
+        color: Global.Color.LightSalmon,
+        style: "bold",
+        sound: 2,
+      });
+      this.endShootout(room);
     }
   }
 }
