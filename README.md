@@ -47,10 +47,18 @@ Each team is entitled to one goalie.
 
 ## Usage
 
-1. Go to https://www.haxball.com/headless
-2. Right Click => Inspect Element
-3. Go to to the tab labeled "console"
-4. Paste the `bundle.js` (file found in `/dist`) in the console and press enter
+### Download the repo
+
+1. Click the `<> Code` box and then `Download ZIP`, or copy the git repository
+2. Install [Node](https://nodejs.org/en)
+3. Inside the repository folder run `npm install` to install the dependacies
+
+### Get the token and run the bot
+
+1. Go to https://www.haxball.com/headlesstoken
+2. Click `Submit` to get the token
+3. Copy the token without the `""` Ex: `thr1.AAAAAGZtqXpl72iLyo5Kaw.Zv_qup2vM5Q`
+4. In the repository folder run the command `npm run open 'your_token'`
 
 
 ## Contributing
