@@ -102,7 +102,7 @@ export default class HandleTime extends Module {
     const timeString = `${seconds >= 59 ? minutes + 1 : minutes}:${seconds >= 59 ? "00" : seconds < 10 ? `0${seconds}` : seconds}`;
 
     // Alert for each second during the last 10 seconds and when there are exactly 30 seconds left
-    if (((remainingSeconds <= 10 && remainingSeconds > 0) || remainingSeconds === 30) && this.lastAlertedSecond !== seconds) {
+    if (((remainingSeconds <= 3 && remainingSeconds > 0) || remainingSeconds === 30) && this.lastAlertedSecond !== seconds) {
       room.send({
         message: `${messageLabel}: ${timeString}! ⏰⏰`,
         style: "bold",
