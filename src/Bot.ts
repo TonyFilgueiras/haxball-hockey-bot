@@ -4,16 +4,15 @@ import { hideBin } from 'yargs/helpers'
 import startHaxball from "./haxball/Haxball.js";
 
 import Room from "./core/Room.js";
-import { AFK } from "./modules/administration/AFK.js";
+// import { AFK } from "./modules/administration/AFK.js";
 import Game from "./modules/Game.js";
 
 import { BetterChat } from "./modules/administration/BetterChat.js";
 import { Admin } from "./modules/administration/Admin.js";
-import Version from "./modules/administration/Version.js";
-import Discord from "./modules/administration/Discord.js";
-import AntiFake from "./modules/administration/AntiFake.js";
-import Log from "./modules/administration/Log.js";
-import RoomQueue from './modules/administration/RoomQueue.js';
+// import Version from "./modules/administration/Version.js";
+// import Discord from "./modules/administration/Discord.js";
+// import Log from "./modules/administration/Log.js";
+// import RoomQueue from './modules/administration/RoomQueue.js';
 
 yargs(hideBin(process.argv))
     .command('open <token>', 'Open the room', {
@@ -52,9 +51,9 @@ function run(HBInit: any, token: string, isClosed?: boolean, testMode?: boolean,
 
     room.setPlayerChat(false);
 
-    if (!testMode) {
-        room.module(AntiFake);
-    }
+    // if (!testMode) {
+    //     room.module(AntiFake);
+    // }
 
     // if (process.env.ENABLE_LOG == "true") {
     //     room.module(Log);
@@ -65,11 +64,9 @@ function run(HBInit: any, token: string, isClosed?: boolean, testMode?: boolean,
     // room.module(AFK);
     room.module(BetterChat);
     room.module(Admin);
-    room.module(Version);
+    // room.module(Version);
     // room.module(Discord);
-    room.module(AntiFake)
     // room.module(RoomQueue)
 
     room.on("roomLink", (link) => console.log(link));
-    console.log(testMode)
 }

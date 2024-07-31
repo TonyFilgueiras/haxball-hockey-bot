@@ -47,6 +47,8 @@ export default class Penalty extends Mode {
 
       this.checkingForPenaltiesOnTick(room);
 
+      
+
       this.penaltyTimer++;
       if (this.teamTakingPenalty === PenaltyTeams.PenaltyRed) {
         this.checkForMissedPenalty(room, "penred");
@@ -123,7 +125,7 @@ export default class Penalty extends Mode {
         if (this.game.insideGoalieBox(player.getX(), player.getY(), "red") && !this.disabledPenalties) {
           this.game.penaltyTaker = getClosestPlayer(player, opposingTeam);
           
-          this.game.detectPenalty(room, player, "O animal pegou a bola dentro da área sem ser goleiro!", 1);
+          this.game.detectPenalty(room, player, "O jogador pegou a bola dentro da área sem ser goleiro!", 1);
         }
       } else if (player.settings.goalie || player.settings.penaltyGoalie) {
         if (this.game.goalieOutsideBox(player)) {
@@ -132,7 +134,7 @@ export default class Penalty extends Mode {
           if (previousTeamTouchOnDisc === 2 && !this.disabledPenalties) {
             this.game.penaltyTaker =
             this.game.mode === GameModes.Shootout ? previousPenaltyTaker : room.getPlayer(this.game.lastPlayerTouch);
-            this.game.detectPenalty(room, player, "O animal tocou no disco fora da area de goleiro apos o toque do adversário", 1);
+            this.game.detectPenalty(room, player, "O jogador tocou no disco fora da area de goleiro apos o toque do adversário", 1);
           }
         }
       }
@@ -142,7 +144,7 @@ export default class Penalty extends Mode {
         if (this.game.insideGoalieBox(player.getX(), player.getY(), "blue") && !this.disabledPenalties) {
           this.game.penaltyTaker = getClosestPlayer(player, opposingTeam);
 
-          this.game.detectPenalty(room, player, "O animal pegou a bola dentro da área sem ser goleiro!", 2);
+          this.game.detectPenalty(room, player, "O jogador pegou a bola dentro da área sem ser goleiro!", 2);
         }
       } else if (player.settings.goalie || player.settings.penaltyGoalie) {
         if (this.game.goalieOutsideBox(player)) {
@@ -151,7 +153,7 @@ export default class Penalty extends Mode {
           if (previousTeamTouchOnDisc === 1 && !this.disabledPenalties) {
             this.game.penaltyTaker =
             this.game.mode === GameModes.Shootout ? previousPenaltyTaker : room.getPlayer(this.game.lastPlayerTouch);
-            this.game.detectPenalty(room, player, "O animal tocou no disco fora da area de goleiro apos o toque do adversário", 2);
+            this.game.detectPenalty(room, player, "O jogador tocou no disco fora da area de goleiro apos o toque do adversário", 2);
           }
         }
       }

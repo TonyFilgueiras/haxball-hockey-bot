@@ -227,6 +227,8 @@ class Game extends Module {
 
       this.customAvatarManager.run();
 
+      this.checkIfPuckClippedOnGoal(room);
+
       this.gameTime = room.getScores().time;
 
       this.penalty.checkingForPenaltiesOnTick(room);
@@ -386,8 +388,8 @@ class Game extends Module {
           this.penaltyTaker.settings.scoredShootout.push(false);
           room.emit("shootoutTaken", this.penaltyTaker.getTeam(), this.penaltyTaker);
         } else {
-          console.log("dfasd")
-          const teamToEmit = xAxis == 500 ? 1 : 2
+          console.log("dfasd");
+          const teamToEmit = xAxis == 500 ? 1 : 2;
           room.emit("shootoutTaken", teamToEmit);
         }
         return;
@@ -722,7 +724,7 @@ class Game extends Module {
       previousTouchOnDisc !== 0
     ) {
       if (previousTouchOnDisc !== player.getTeam()) {
-        const penaltyMessage = "O animal tocou no disco fora da área de goleiro após o toque do adversário";
+        const penaltyMessage = "O jogador tocou no disco fora da área de goleiro após o toque do adversário";
         this.penaltyTaker = this.mode === GameModes.Shootout ? getClosestPlayer(player, opposingTeam) : previousPlayerTouchOnDisc;
 
         this.detectPenalty(room, player, penaltyMessage, player.getTeam());
@@ -769,7 +771,7 @@ class Game extends Module {
             this.penaltyTaker = getClosestPlayer(player, opposingTeam);
           }
 
-          this.detectPenalty(room, player, "O animal pegou a bola dentro da área sem ser goleiro!", teamGoalie);
+          this.detectPenalty(room, player, "O jogador pegou a bola dentro da área sem ser goleiro!", teamGoalie);
         }
       }
     }
@@ -803,6 +805,33 @@ class Game extends Module {
     } else {
       return false;
     }
+  }
+
+  checkIfPuckClippedOnGoal(room: Room) {
+    const puck = room.getBall();
+    if (
+      ((this.insideGoal(puck.getX(), puck.getY(), "red") && puck.getX() < -768) ||
+        (this.insideGoal(puck.getX(), puck.getY(), "blue") && puck.getX() > 768)) &&
+      !this.penalty.disabledPenalties
+    ) {
+      if (!room.isGamePaused()) {
+        room.send({
+          message: `O disco ta dentro do gol, caso tenha entrado por tras do gol, adm tem que usar !reset para resetar a bola`,
+          color: Global.Color.GoldenRod,
+          sound: 2,
+        });
+        room.send({
+          message: `adm tem que usar !reset para resetar a bola`,
+          color: Global.Color.GoldenRod,
+          sound: 2,
+          style: "bold"
+          
+        });
+        puck.setVelocityX(0);
+        room.pause();
+      }
+      return true;
+    } else return false;
   }
 
   setGoalie(room: Room, player: Player) {
@@ -962,7 +991,7 @@ class Game extends Module {
                 style: "bold",
               });
               room.send({
-                message: `O animal bateu no Goleiro adversário`,
+                message: `O jogador bateu no Goleiro adversário`,
                 color: this.redTextColor,
                 style: "bold",
               });
@@ -1021,7 +1050,7 @@ class Game extends Module {
                 style: "bold",
               });
               room.send({
-                message: `O animal bateu no Goleiro adversário`,
+                message: `O jogador bateu no Goleiro adversário`,
                 color: this.blueTextColor,
                 style: "bold",
               });
