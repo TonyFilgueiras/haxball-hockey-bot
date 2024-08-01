@@ -1079,9 +1079,14 @@ class Game extends Module {
   }
 
   setDiscPosition(disc: Player | Disc, x: number, y: number, xSpeed: number = 0, ySpeed: number = 0) {
-    disc.setPosition({ x: x, y: y });
-    disc.setVelocityX(xSpeed);
-    disc.setVelocityY(ySpeed);
+    try {
+      disc.setPosition({ x: x, y: y });
+      disc.setVelocityX(xSpeed);
+      disc.setVelocityY(ySpeed);
+      
+    } catch {
+      console.log("Disc position set failed");
+    }
   }
 
   getTeamName(team: Team) {
