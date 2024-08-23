@@ -58,4 +58,8 @@ export default class PlayerList extends List<Player, number> {
     public clone() {
         return new PlayerList(this.list);
     }
+
+    public length() {
+        return this.list.length
+    }
 }

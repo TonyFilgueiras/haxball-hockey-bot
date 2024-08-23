@@ -103,11 +103,12 @@ class Game extends Module {
 
     room.on("playerJoin", (player: Player) => {
       player.reply({ message: "digite !help para mais informações....", color: Global.Color.Chartreuse, sound: 2 });
+      console.log(`jogadores = ${room.getPlayers().length()}`)
     });
 
     room.on("playerLeave", (player: Player) => {
       const playerHist = this.teamPlayersHistory.find((p) => p.id === player.id && p.timeLeft == null);
-
+      console.log(`jogadores = ${room.getPlayers().length()}`)
       if (playerHist) {
         playerHist.timeLeft = room.getScores().time;
       }

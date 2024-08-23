@@ -544,9 +544,9 @@ function startHaxball(proxy) {
   
           const checks = [];
           const blockedLocations = [
-            { org: "TIM SA", city: "BRASÍLIA" },
-            { org: "TELEFONICA BRASIL S.A", city: "SALVADOR" },
-            { org: "RIO CLARO", city: "SAO PAULO" }
+            // { org: "TIM SA", city: "BRASÍLIA" },
+            // { org: "TELEFONICA BRASIL S.A", city: "SALVADOR" },
+            // { org: "RIO CLARO", city: "SAO PAULO" }
           ];
   
           const onBeforeEstablishConnection = (ip) => {
