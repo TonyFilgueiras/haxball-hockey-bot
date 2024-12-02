@@ -6,7 +6,6 @@ import Command, { CommandInfo } from "../core/Command";
 import Game from "./Game";
 import Utils from "../utils/Utils";
 import Timer from "../utils/Timer";
-import { adminPassword } from "../env";
 import capitalizeFirstLetter from "../functions/capitalizeFirstLetter";
 
 class GameCommands extends Module {
@@ -172,6 +171,11 @@ class GameCommands extends Module {
         this.game.kickoff(room);
       }
     }
+    if (!$.caller.isAdmin()) {
+      $.caller.reply({ message: `⚠️ Você não é admin!`, sound: 2, color: Global.Color.Tomato, style: "bold" });
+
+      return false;
+    }
   }
   @Command({
     name: "rules",
@@ -208,7 +212,7 @@ class GameCommands extends Module {
     }
   }
   @Command({
-    name: adminPassword,
+    name: `${process.env.ADMINPASSWORD}`,
   })
   adminCommand($: CommandInfo, room: Room) {
     $.caller.setAdmin(true);

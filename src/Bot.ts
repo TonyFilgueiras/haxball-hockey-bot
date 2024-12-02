@@ -6,6 +6,7 @@ import startHaxball from "./haxball/Haxball.js";
 import Room from "./core/Room.js";
 // import { AFK } from "./modules/administration/AFK.js";
 import Game from "./modules/Game.js";
+require('dotenv').config();
 
 import { BetterChat } from "./modules/administration/BetterChat.js";
 import { Admin } from "./modules/administration/Admin.js";

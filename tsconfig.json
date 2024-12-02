@@ -2,9 +2,8 @@
     "compilerOptions": {
         "module": "CommonJS",
         "esModuleInterop": true,
-        "noImplicitAny": true,
+        "noImplicitAny": false,
         "removeComments": true,
-        "suppressImplicitAnyIndexErrors": true,
         "target": "esnext",
         "experimentalDecorators": true,
         "resolveJsonModule": true,
