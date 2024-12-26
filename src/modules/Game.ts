@@ -112,6 +112,10 @@ class Game extends Module {
       if (playerHist) {
         playerHist.timeLeft = room.getScores().time;
       }
+      if (room.getPlayers().length() <= 0) {
+        room.stop()
+        this.mode = null;
+      }
     });
 
     room.on("playerChat", (player, message) => {
