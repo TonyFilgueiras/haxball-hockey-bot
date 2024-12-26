@@ -10,7 +10,6 @@
     "@abraham/reflection": "^0.8.0",
     "@koush/wrtc": "^0.5.3",
     "@peculiar/webcrypto": "^1.4.3",
-    "discord.js": "^14.11.0",
     "dotenv": "^16.4.5",
     "https-proxy-agent": "^7.0.0",
     "json5": "^2.2.3",

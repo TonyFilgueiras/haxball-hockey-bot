@@ -158,7 +158,6 @@ class GameCommands extends Module {
     aliases: ["resetball"],
   })
   resetBallCommand($: CommandInfo, room: Room) {
-    console.log(process.env.ADMINPASSWORD)
     if ($.caller.isAdmin() && room.isGameInProgress()) {
       if (room.getBall().getX() < 0) {
         room.send({ message: `${$.caller.name} resetou a posição da bola`, color: Global.Color.DarkGoldenRod, style: "bold", sound: 2 });
