@@ -83,7 +83,9 @@ export default class HandleTime extends Module {
       this.inOvertime = false;
       this.clockTick = 0;
       this.clockSeconds = 0;
+      room.setTimeLimit(0)
     });
+    // room.on("cha")
   }
 
   countSeconds() {
