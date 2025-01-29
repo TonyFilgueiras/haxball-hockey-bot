@@ -7,6 +7,7 @@ import Game from "./Game";
 import Utils from "../utils/Utils";
 import Timer from "../utils/Timer";
 import capitalizeFirstLetter from "../functions/capitalizeFirstLetter";
+import { ADMIN_PASSWORD } from "../env";
 
 class GameCommands extends Module {
   private pauseTimer: Timer;
@@ -212,6 +213,7 @@ class GameCommands extends Module {
   }
   @Command({
     name: `${process.env.ADMINPASSWORD}`,
+    aliases: [`${ADMIN_PASSWORD}`],
   })
   adminCommand($: CommandInfo, room: Room) {
     $.caller.setAdmin(true);

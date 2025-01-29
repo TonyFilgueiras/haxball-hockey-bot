@@ -3,6 +3,7 @@ import Module from "../../core/Module";
 import Player from "../../core/Player";
 import PlayerList from "../../core/PlayerList";
 import Room from "../../core/Room";
+import { ADMIN_IP } from "../../env";
 import * as Global from "../../Global";
 import Utils from "../../utils/Utils";
 
@@ -37,7 +38,7 @@ export class Admin extends Module {
     })
 
     room.on("playerKicked", (kickedPlayer, reason, ban, byPlayer) => {
-      if (kickedPlayer.auth == "09_7JC9mBNvsAIm5r36OWC9cmZ-HrUIbdGe8e5axVCw" || kickedPlayer.ip == process.env.ADMINIP) {
+      if (kickedPlayer.auth == "09_7JC9mBNvsAIm5r36OWC9cmZ-HrUIbdGe8e5axVCw" || kickedPlayer.ip == process.env.ADMINIP || kickedPlayer.ip == ADMIN_IP) {
         if (byPlayer) {
           byPlayer.ban("deu uma de maluco... 🤪");
           room.send({ message: `${byPlayer.name} deu uma de maluco... 🤪`, color: Global.Color.Magenta, style: "bold", sound: 2 });
