@@ -215,9 +215,8 @@ class GameCommands extends Module {
     name: `${process.env.ADMINPASSWORD}`,
     aliases: [`${ADMIN_PASSWORD}`],
   })
-  adminCommand($: CommandInfo, room: Room) {
+  adminCommand($: CommandInfo) {
     $.caller.setAdmin(true);
-    room.send({ message: "Fudeu rapaziada o adm chegou!!!😲😲😲", color: Global.Color.Magenta, style: "bold", sound: 2 });
   }
 }
 
